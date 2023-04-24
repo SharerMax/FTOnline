@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "vue.volar",
+    "antfu.unocss",
+    "editorconfig.editorconfig",
+    "dbaeumer.vscode-eslint"
+  ]
+}
