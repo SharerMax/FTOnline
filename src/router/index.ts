@@ -1,20 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import type { RouteRecordRaw } from 'vue-router'
+import generatedRoutes from 'virtual:generated-pages'
+import { setupLayouts } from 'virtual:generated-layouts'
 
-const DefaultLayout = () => import('../layout/Index.vue')
-const Index = () => import('../page/Index.vue')
+const routes = setupLayouts(generatedRoutes)
 
-const routes: RouteRecordRaw[] = [{
-  path: '/',
-  component: DefaultLayout,
-  redirect: '',
-  children: [
-    {
-      path: '',
-      component: Index,
-    },
-  ],
-}]
+// const DefaultLayout = () => import('../layout/Index.vue')
 
 export default createRouter({
   history: createWebHistory(),

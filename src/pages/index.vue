@@ -20,3 +20,11 @@ export default {
 <style scoped>
 
 </style>
+
+<route lang="json5">
+  {
+    "meta": {
+      "title": "Home"
+    }
+  }
+</route>

@@ -1,9 +1,7 @@
 {
+  "extends": "@tsconfig/node18/tsconfig.json",
   "compilerOptions": {
-    "composite": true,
-    "module": "esnext",
-    "moduleResolution": "node",
     "types": ["node"]
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts", "uno.config.ts"]
 }
