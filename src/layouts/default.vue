@@ -1,15 +1,18 @@
 <template>
-  <h2 class="text-center color-orange">
-    {{ title }}
-  </h2>
-  <router-view />
+  <router-view class="min-h-screen bg-white dark:bg-dark-950" />
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-const title = router.currentRoute.value.meta.title
+const darkMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+if (darkMediaQuery.matches) {
+  document.body.classList.add('dark')
+}
+else {
+  document.body.classList.remove('dark')
+}
+darkMediaQuery.addEventListener('change', (e) => {
+  document.body.classList.toggle('dark')
+})
 </script>
 
 <style scoped>

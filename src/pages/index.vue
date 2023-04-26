@@ -1,20 +1,15 @@
 <template>
-  <div class="text-center">
-    <h1>Happy Coding</h1>
-    <img
-      src="@/assets/img/logo.png"
-    >
+  <div class="text-center ">
+    <div class="color-orange-500">
+      <input v-model="input" type="text" class="outline-orange"> <button class="i-carbon-search" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 
-</script>
-
-<script lang="ts">
-export default {
-  name: 'HomeIndex',
-}
+const input = ref('')
 </script>
 
 <style scoped>
