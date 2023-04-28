@@ -1,11 +1,11 @@
 <template>
-  <div class=" color-orange-500 ">
-    <div class="w-80 mx-auto">
-      <div class="pt-14 text-4/8 flex justify-center items-center">
-        <input v-model.trim="input" type="text" class="outline-none leading-8 w-80 px-2  color-orange border-1 border-orange rounded dark:(bg-dark-800)">
-        <button class="i-carbon:search h-4 w-4 border-none ml-4 cursor-pointer inline-block" @click="handleSearchClick" />
+  <div class=" color-orange-500">
+    <div class="w-100 pt-80 mx-auto">
+      <div class="pt-14 text-4/8 flex justify-center items-center ">
+        <input v-model.trim="input" type="text" class="color-orange outline-none leading-8 flex-1 px-2 border-1  border-orange rounded dark:(bg-dark-800)" placeholder="想看啥？">
+        <button class="i-carbon:search h-4 w-4 border-none ml-4 cursor-pointer color-orange flex-none" @click="handleSearchClick" />
       </div>
-      <div class="mt-4">
+      <!-- <div class="mt-4">
         <ul class="list-none m-0 p-0 space-y-4">
           <li v-for="item in videoList" :key="item.vod_id">
             <figure class="m-0 p-0  w-full">
@@ -16,14 +16,14 @@
             </figure>
           </li>
         </ul>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import axios from 'axios'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const input = ref('')
 const videoList = ref<{
@@ -33,14 +33,14 @@ const videoList = ref<{
   vod_play_url: string
   vod_remarks: string
 }[]>([])
+const router = useRouter()
 function handleSearchClick() {
-  const wd = input.value
-  if (wd) {
-    axios.get(`https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(`https://api.1080zyku.com/inc/apijson.php?ac=detail&wd=${input.value}`)}`).then((res) => {
-      console.log(res)
-      videoList.value = res.data.list
-    })
-  }
+  router.push({
+    path: '/search',
+    query: {
+      kw: input.value,
+    },
+  })
 }
 </script>
 
@@ -51,6 +51,7 @@ function handleSearchClick() {
 <route lang="json5">
   {
     "meta": {
+      "layout": "default",
       "title": "Home"
     }
   }
