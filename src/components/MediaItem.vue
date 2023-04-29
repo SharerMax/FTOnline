@@ -8,7 +8,7 @@
       <p class="m-0 line-clamp-2">
         {{ description }}
       </p>
-      <button class="bg-orange text-white rounded px-4 border-none cursor-pointer">
+      <button class="bg-orange text-white rounded px-4 border-none cursor-pointer" @click="handlePlayClick">
         播放
       </button>
     </div>
@@ -17,10 +17,18 @@
 
 <script setup lang="ts">
 const props = defineProps<{
+  id: string
   poster: string
   name: string
   description: string
 }>()
+const emits = defineEmits<{
+  (e: 'clickPlay', id: string): void
+}>()
+
+function handlePlayClick() {
+  emits('clickPlay', props.id)
+}
 </script>
 
 <style  scoped>

@@ -15,5 +15,13 @@ module.exports = {
     'vue/component-tags-order': ['error', {
       order: ['template', 'script', 'style'],
     }],
+    'vue/max-attributes-per-line': ['error', {
+      singleline: {
+        max: 3,
+      },
+      multiline: {
+        max: 1,
+      },
+    }],
   },
 }
