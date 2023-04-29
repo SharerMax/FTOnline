@@ -2,7 +2,13 @@
   <div class=" color-orange-500">
     <div class="w-100 pt-80 mx-auto">
       <div class="pt-14 text-4/8 flex justify-center items-center ">
-        <input v-model.trim="input" type="text" class="color-orange outline-none leading-8 flex-1 px-2 border-1  border-orange rounded dark:(bg-dark-800)" placeholder="想看啥？">
+        <input
+          v-model.trim="input"
+          type="text"
+          class="color-orange outline-none leading-8 flex-1 px-2 border-1  border-orange border-solid  rounded dark:(bg-dark-800)"
+          placeholder="想看啥？"
+          @keyup.enter="handleSearchClick"
+        >
         <button class="i-carbon:search h-4 w-4 border-none ml-4 cursor-pointer color-orange flex-none" @click="handleSearchClick" />
       </div>
       <!-- <div class="mt-4">

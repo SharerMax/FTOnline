@@ -5,7 +5,7 @@
         <input
           v-model.trim="input"
           type="text"
-          class="outline-none leading-8 flex-1 px-2  color-orange border-1 border-orange rounded dark:(bg-dark-800)"
+          class="outline-none leading-8 flex-1 px-2  color-orange border-1 border-orange border-solid rounded dark:(bg-dark-800)"
           @keyup.enter="handleSearchClick"
         >
         <button class="i-carbon:search h-4 w-4 border-none ml-4 cursor-pointer flex-none color-orange" @click="handleSearchClick" />
@@ -15,9 +15,18 @@
           <li v-for="video in videoList" :key="video.vod_id">
             <MediaItem
               :id="video.vod_id"
+              :actor="video.vod_actor"
+              :area="video.vod_area"
+              :language="video.vod_lang"
+              :remark="video.vod_remarks"
+              :type="video.type_name"
+              :year="video.vod_year"
+              :director="video.vod_director"
               :poster="video.vod_pic"
               :name="video.vod_name"
               :description="video.vod_content"
+              :score="video.vod_score"
+              :sub-name="video.vod_sub"
               @click-play="handlePlayClick"
             />
           </li>

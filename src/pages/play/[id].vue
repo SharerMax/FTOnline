@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-center items-center">
     <div class="max-w-3xl w-full ">
-      <h2>{{ videoDetail?.vod_name }}</h2>
+      <h2>{{ videoDetail?.vod_name }} - {{ videoDetail?.vod_sub }}</h2>
       <div id="player" class="w-full aspect-16/9" />
       <div class="mt-4 flex flex-wrap gap-2">
         <button
@@ -73,6 +73,9 @@ onMounted(() => {
     },
     autoplay: true,
     fullscreen: true,
+    playbackRate: true,
+    aspectRatio: true,
+    setting: true,
   })
   getVideoDetail(videoId).then((detail) => {
     videoDetail.value = detail
