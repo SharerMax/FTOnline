@@ -1,14 +1,14 @@
 <template>
   <div class="flex justify-center">
-    <div class="max-w-lg w-full">
-      <div class="pt-14 text-4/8 flex justify-center items-center">
+    <div class="max-w-lg w-full pt-14">
+      <div class="text-4/8 flex justify-center items-center border-1 border-orange border-solid rounded overflow-hidden">
         <input
           v-model.trim="input"
           type="text"
-          class="outline-none leading-8 flex-1 px-2  color-orange border-1 border-orange border-solid rounded dark:(bg-dark-800)"
+          class="outline-none leading-8 flex-1 px-2  color-orange border-none dark:(bg-dark-800)"
           @keyup.enter="handleSearchClick"
         >
-        <button class="i-carbon:search h-4 w-4 border-none ml-4 cursor-pointer flex-none color-orange" @click="handleSearchClick" />
+        <button class="i-carbon:search h-4 w-4 border-none px-5 cursor-pointer flex-none color-orange" @click="handleSearchClick" />
       </div>
       <div>
         <ul class="list-none p-0 space-y-4">
