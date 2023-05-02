@@ -1,7 +1,9 @@
 <template>
   <div class="flex justify-center items-center">
     <div class="max-w-3xl w-full ">
-      <h2>{{ videoDetail?.vod_name }} - {{ videoDetail?.vod_sub }}</h2>
+      <h2 class="m-0 mb-4">
+        {{ videoDetail?.vod_name }} - {{ videoDetail?.vod_sub }}
+      </h2>
       <div id="player" class="w-full aspect-16/9" />
       <div class="mt-4 flex flex-wrap gap-2">
         <button
@@ -42,7 +44,10 @@ function parseEpisode(url: string) {
 }
 async function getVideoDetail(id: string) {
   const res = await axios.get(`https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(`https://api.1080zyku.com/inc/apijson.php?ac=detail&ids=${id}`)}`)
-  return res.data.list[0] as VideoDetail
+  if (res.data.list && res.data.list.length > 0) {
+    return res.data.list[0] as VideoDetail
+  }
+  return null
 }
 
 let hls: Hls
@@ -76,10 +81,13 @@ onMounted(() => {
     playbackRate: true,
     aspectRatio: true,
     setting: true,
+    pip: true,
   })
   getVideoDetail(videoId).then((detail) => {
     videoDetail.value = detail
-    handleEpisodeClick(parseEpisode(episodes.value[0]), 0)
+    if (episodes.value.length > 0) {
+      handleEpisodeClick(parseEpisode(episodes.value[0]), 0)
+    }
   })
 })
 const selectedEpisodeIndex = ref(0)

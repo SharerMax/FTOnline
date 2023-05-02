@@ -11,7 +11,8 @@
         <button class="i-carbon:search h-4 w-4 border-none px-5 cursor-pointer flex-none color-orange" @click="handleSearchClick" />
       </div>
       <div>
-        <ul class="list-none p-0 space-y-4">
+        <div v-show="loading" class="i-svg-spinners:blocks-shuffle-3 color-orange mx-auto mt-12 w-10 h-10" />
+        <ul v-show="!loading" class="list-none p-0 space-y-4">
           <li v-for="video in videoList" :key="video.vod_id">
             <MediaItem
               :id="video.vod_id"
@@ -48,11 +49,13 @@ const keyWord = route.query.kw as string
 const input = ref(keyWord || '')
 const videoList = ref<VideoDetail[]>([])
 
+const loading = ref(false)
 function searchVideoList(keyword: string) {
+  loading.value = true
   axios.get(`https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(`https://api.1080zyku.com/inc/apijson.php?ac=detail&wd=${keyword}`)}`).then((res) => {
     console.log(res)
     videoList.value = res.data.list
-  })
+  }).finally(() => loading.value = false)
 }
 
 function handleSearchClick() {
