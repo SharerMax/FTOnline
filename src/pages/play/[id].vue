@@ -82,6 +82,8 @@ onMounted(() => {
     aspectRatio: true,
     setting: true,
     pip: true,
+    autoPlayback: true,
+    theme: '#fb923c',
   })
   getVideoDetail(videoId).then((detail) => {
     videoDetail.value = detail
