@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center items-center">
+  <div class="flex justify-center items-center py-4">
     <div class="max-w-3xl w-full ">
       <h2 class="m-0 mb-4">
         {{ videoDetail?.vod_name }} - {{ videoDetail?.vod_sub }}
