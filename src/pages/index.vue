@@ -26,7 +26,7 @@ const input = ref('')
 const router = useRouter()
 function handleSearchClick() {
   router.push({
-    path: '/search',
+    path: '/search/1',
     query: {
       kw: input.value,
     },

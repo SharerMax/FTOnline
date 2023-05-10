@@ -9,7 +9,7 @@
         <button
           v-for="(episode, index) in episodes"
           :key="index"
-          class="border-1 border-orange text-orange bg-transparent rounded cursor-pointer mr-2"
+          class="border-1 border-orange text-orange bg-transparent rounded cursor-pointer mr-2 [&.active]:(bg-orange text-white)"
           :class="{ active: selectedEpisodeIndex === index }"
           @click="handleEpisodeClick(parseEpisode(episode), index)"
         >
@@ -103,7 +103,4 @@ function handleEpisodeClick(episode: ReturnType<typeof parseEpisode>, index: num
 </script>
 
 <style scoped>
-button.active {
-  @apply bg-orange text-white;
-}
 </style>

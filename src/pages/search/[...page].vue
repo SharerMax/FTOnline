@@ -98,7 +98,7 @@ onMounted(() => {
 const router = useRouter()
 function handlePlayClick(videoId: string) {
   router.push({
-    path: `play/${videoId}`,
+    path: `/play/${videoId}`,
   })
 }
 </script>
