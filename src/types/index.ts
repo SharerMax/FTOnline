@@ -15,3 +15,13 @@ export interface VideoDetail {
   type_name: string
   type_id: string
 }
+
+export interface ApiResponse<T> {
+  code: number
+  limit: number
+  page: number
+  pageCount: number
+  total: number
+  msg: string
+  list: T[]
+}
