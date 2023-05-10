@@ -3,8 +3,9 @@
     <div
       v-for="pageNum in pageCount"
       :key="pageNum"
-      class="cursor-pointer px-2 py-1 h-5 leading-3 text-3 border-1 border-orange border-solid rounded hover:bg-orange"
+      class="cursor-pointer px-2 py-1 h-5 leading-3 text-3 border-1 border-orange border-solid rounded hover:bg-orange [&[active]]:bg-orange"
       @click="handlePageClick(pageNum)"
+      :active="pageNum === page ? true : null"
     >
       {{ pageNum }}
     </div>
