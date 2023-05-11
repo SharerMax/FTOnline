@@ -42,9 +42,10 @@ const pageNumStep = computed(() => {
       return 0
     }
     else {
-      const maxCenterPage = pageCount.value - MAX_HALF_PAGE_BUTTON_COUNT
-      if (currentPage.value > maxCenterPage) {
-        return maxCenterPage - MAX_HALF_PAGE_BUTTON_COUNT
+      // pageNum = diff + 1(self); eg: 1-10 共 10-1 + 1 = 10 个数
+      const maxCenterPageNum = (pageCount.value - MAX_HALF_PAGE_BUTTON_COUNT) + 1
+      if (currentPage.value > maxCenterPageNum) {
+        return maxCenterPageNum - MAX_HALF_PAGE_BUTTON_COUNT
       }
       else {
         return currentPage.value - MAX_HALF_PAGE_BUTTON_COUNT
