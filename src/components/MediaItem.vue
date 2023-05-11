@@ -2,7 +2,7 @@
   <div class="flex">
     <img :src="poster" alt="" class="w-40 aspect-2/3 object-cover flex-none">
     <div class="ml-4 flex flex-col flex-1 overflow-hidden">
-      <h2 class="m-0 text-5 ">
+      <h2 class="m-0 text-5 truncate" :title="name">
         {{ name }}
       </h2>
       <div class="mt-2">

@@ -26,7 +26,6 @@
                 :director="video.vod_director"
                 :poster="video.vod_pic"
                 :name="video.vod_name"
-                :description="video.vod_content"
                 :score="video.vod_score"
                 :sub-name="video.vod_sub"
                 @click-play="handlePlayClick"
