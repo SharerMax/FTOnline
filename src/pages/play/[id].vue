@@ -11,9 +11,9 @@
           :key="index"
           class="border-1 border-orange text-orange bg-transparent rounded cursor-pointer mr-2 [&.active]:(bg-orange text-white)"
           :class="{ active: selectedEpisodeIndex === index }"
-          @click="handleEpisodeClick(parseEpisode(episode), index)"
+          @click="handleEpisodeClick(episode, index)"
         >
-          {{ parseEpisode(episode).episodeName }}
+          {{ episode.episodeName }}
         </button>
       </div>
     </div>
@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import axios from 'axios'
 import Artplayer from 'artplayer'
 import Hls from 'hls.js'
@@ -33,7 +33,10 @@ const videoId = route.params.id as string
 
 const videoDetail = ref<VideoDetail | null>(null)
 const episodes = computed(() => {
-  return videoDetail.value?.vod_play_url.split('#') ?? []
+  return (videoDetail.value?.vod_play_url.split('#') ?? []).map(parseEpisode)
+})
+const episodesCount = computed(() => {
+  return episodes.value.length
 })
 function parseEpisode(url: string) {
   const [episodeName, videoUrl] = url.split('$')
@@ -68,6 +71,8 @@ function playM3u8(video: HTMLMediaElement, url: string, art: Artplayer) {
     art.notice.show = 'Unsupported playback format: m3u8'
   }
 }
+const selectedEpisodeIndex = ref(0)
+
 let player: Artplayer | null = null
 onMounted(() => {
   player = new Artplayer({
@@ -85,17 +90,31 @@ onMounted(() => {
     autoPlayback: true,
     theme: '#fb923c',
   })
+  player.on('video:ended', () => {
+    console.log('video:ended')
+    if (selectedEpisodeIndex.value < episodesCount.value - 1) {
+      selectedEpisodeIndex.value += 1
+      playEpisode(episodes.value[selectedEpisodeIndex.value])
+    }
+  })
   getVideoDetail(videoId).then((detail) => {
     videoDetail.value = detail
     if (episodes.value.length > 0) {
-      handleEpisodeClick(parseEpisode(episodes.value[0]), 0)
+      handleEpisodeClick(episodes.value[0], 0)
     }
   })
 })
-const selectedEpisodeIndex = ref(0)
+onBeforeUnmount(() => {
+  player?.destroy(false)
+  player = null
+})
 function handleEpisodeClick(episode: ReturnType<typeof parseEpisode>, index: number) {
   selectedEpisodeIndex.value = index
   console.log(episode)
+  playEpisode(episode)
+}
+
+function playEpisode(episode: ReturnType<typeof parseEpisode>) {
   if (player) {
     player.url = episode.videoUrl
   }
