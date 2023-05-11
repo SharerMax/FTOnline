@@ -67,6 +67,7 @@ const pagination = reactive({
   total: 0,
   size: 10,
 })
+const router = useRouter()
 
 const loading = ref(false)
 function searchVideoList(keyword: string, page = 1) {
@@ -78,8 +79,13 @@ function searchVideoList(keyword: string, page = 1) {
     videoList.value = res.data.list
   }).finally(() => loading.value = false)
 }
-
 function handlePageChange(page: number) {
+  router.push({
+    path: `/search/${page}`,
+    query: {
+      kw: input.value,
+    },
+  })
   searchVideoList(input.value, page)
   pagination.page = page
 }
@@ -92,10 +98,9 @@ function handleSearchClick() {
 }
 onMounted(() => {
   if (keyWord) {
-    searchVideoList(keyWord || '')
+    searchVideoList(keyWord || '', pagination.page)
   }
 })
-const router = useRouter()
 function handlePlayClick(videoId: string) {
   router.push({
     path: `/play/${videoId}`,
