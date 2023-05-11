@@ -49,6 +49,7 @@
 import axios from 'axios'
 import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { RouteLocationRaw } from 'vue-router'
 import MediaItem from '@/components/MediaItem.vue'
 import Pagination from '@/components/Pagination.vue'
 import type { ApiResponse, VideoDetail } from '@/types'
@@ -62,7 +63,7 @@ const input = ref(keyWord || '')
 const videoList = ref<VideoDetail[]>([])
 console.log(props.page)
 const pagination = reactive({
-  page: +props.page,
+  page: props.page ? +props.page : 1,
   total: 0,
   size: 10,
 })
@@ -78,27 +79,33 @@ function searchVideoList(keyword: string, page = 1) {
     videoList.value = res.data.list
   }).finally(() => loading.value = false)
 }
-function handlePageChange(page: number) {
-  router.push({
+
+function updatePage(page: number) {
+  const routeLocation: RouteLocationRaw = {
     path: `/search/${page}`,
     query: {
       kw: input.value,
     },
-  })
+  }
+  if (pagination.page === page) {
+    router.replace(routeLocation)
+  }
+  else {
+    router.push(routeLocation)
+  }
+
   searchVideoList(input.value, page)
-  pagination.page = page
+}
+
+function handlePageChange(page: number) {
+  updatePage(page)
 }
 
 function handleSearchClick() {
-  const wd = input.value
-  if (wd) {
-    searchVideoList(wd)
-  }
+  updatePage(1)
 }
 onMounted(() => {
-  if (keyWord) {
-    searchVideoList(keyWord || '', pagination.page)
-  }
+  searchVideoList(keyWord || '', pagination.page)
 })
 function handlePlayClick(videoId: string) {
   router.push({
