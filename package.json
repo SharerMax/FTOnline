@@ -15,9 +15,9 @@
     "@unocss/reset": "^0.51.12",
     "artplayer": "^5.0.6",
     "axios": "^1.4.0",
-    "hls.js": "^1.4.2",
-    "vue": "^3.2.47",
-    "vue-router": "^4.1.6"
+    "hls.js": "^1.4.3",
+    "vue": "^3.3.1",
+    "vue-router": "^4.2.0"
   },
   "devDependencies": {
     "@antfu/eslint-config-vue": "^0.38.6",
@@ -27,7 +27,7 @@
     "@unocss/preset-icons": "^0.51.12",
     "@unocss/transformer-directives": "^0.51.12",
     "@unocss/transformer-variant-group": "^0.51.12",
-    "@vitejs/plugin-vue": "^4.2.1",
+    "@vitejs/plugin-vue": "^4.2.2",
     "@vue/tsconfig": "^0.3.2",
     "eslint": "^8.40.0",
     "postcss": "^8.4.23",
