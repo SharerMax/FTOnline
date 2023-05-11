@@ -1,6 +1,6 @@
 <template>
   <div class="pagination flex justify-center items-center space-x-2">
-    <div class="i-carbon:page-first color-orange cursor-pointer [&.disabled]:(cursor-not-allowed opacity-50)" :class=" currentPage === 1 ? 'disabled' : null" @click="handlePageFirstClick" />
+    <div class="i-carbon-page-first color-orange cursor-pointer [&.disabled]:(cursor-not-allowed opacity-50)" :class=" currentPage === 1 ? 'disabled' : null" @click="handlePageFirstClick" />
     <div
       v-for="pageNum in selectPageButtonCount"
       :key="pageNum"
@@ -10,7 +10,7 @@
     >
       {{ pageNum + pageNumStep }}
     </div>
-    <div class="i-carbon:page-last color-orange cursor-pointer [&.disabled]:(cursor-not-allowed opacity-50)" :class=" currentPage === pageCount ? 'disabled' : null" @click="handlePageLastClick" />
+    <div class="i-carbon-page-last color-orange cursor-pointer [&.disabled]:(cursor-not-allowed opacity-50)" :class=" currentPage === pageCount ? 'disabled' : null" @click="handlePageLastClick" />
   </div>
 </template>
 
