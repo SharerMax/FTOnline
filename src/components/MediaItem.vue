@@ -67,11 +67,11 @@ function handlePlayClick() {
 }
 </script>
 
-<style  scoped>
-.test {
+<style scoped>
+/* .test {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-}
+} */
 </style>
