@@ -6,6 +6,14 @@
         {{ videoDetail?.vod_name }} - {{ videoDetail?.vod_sub }}
       </h2>
       <div id="player" class="w-full aspect-16/9" />
+      <div class="mt-4 flex">
+        <button class="bg-orange color-white rounded border-none py-.5 cursor-pointer" @click="handleEpisodeHeaderTimeSkipSetClick ">
+          跳过片头 {{ episodeStore.headerTimes[videoId] ?? 0 }}s
+        </button>
+        <button class="bg-orange color-white rounded border-none py-.5 cursor-pointer ml-a" @click="handleEpisodeTailTimeSkipSetClick ">
+          跳过片尾 {{ episodeStore.tailTimes[videoId] ?? 0 }}s
+        </button>
+      </div>
       <div class="mt-4 flex flex-wrap gap-2">
         <button
           v-for="(episode, index) in episodes"
@@ -23,11 +31,12 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import axios from 'axios'
 import Artplayer from 'artplayer'
 import Hls from 'hls.js'
 import type { VideoDetail } from '@/types'
+import useEpisodeStore from '@/store/useEpisodeStore'
 
 const route = useRoute()
 const videoId = route.params.id as string
@@ -73,6 +82,7 @@ function playM3u8(video: HTMLMediaElement, url: string, art: Artplayer) {
   }
 }
 const selectedEpisodeIndex = ref(0)
+const episodeStore = useEpisodeStore()
 
 let player: Artplayer | null = null
 onMounted(() => {
@@ -92,10 +102,27 @@ onMounted(() => {
     theme: '#fb923c',
   })
   player.on('video:ended', () => {
-    console.log('video:ended')
-    if (selectedEpisodeIndex.value < episodesCount.value - 1) {
-      selectedEpisodeIndex.value += 1
-      playEpisode(episodes.value[selectedEpisodeIndex.value])
+    playNextEpisode()
+  })
+
+  player.on('ready', () => {
+    nextTick(() => {
+      skipEpisodeHeader()
+    })
+  })
+  player.on('restart', () => {
+    skipEpisodeHeader()
+  })
+
+  player.on('video:timeupdate', () => {
+    // console.log(event)
+
+    const currentTime = player!.currentTime
+    const duration = player!.duration
+    const remainTime = duration - currentTime
+    const skipTailTime = episodeStore.tailTimes[videoId] ?? 0
+    if (player!.duration > 0 && remainTime <= skipTailTime) {
+      playNextEpisode()
     }
   })
   getVideoDetail(videoId).then((detail) => {
@@ -117,7 +144,34 @@ function handleEpisodeClick(episode: ReturnType<typeof parseEpisode>, index: num
 
 function playEpisode(episode: ReturnType<typeof parseEpisode>) {
   if (player) {
-    player.url = episode.videoUrl
+    player.switch = episode.videoUrl
+  }
+}
+
+function playNextEpisode() {
+  if (selectedEpisodeIndex.value < episodesCount.value - 1) {
+    selectedEpisodeIndex.value += 1
+    playEpisode(episodes.value[selectedEpisodeIndex.value])
+  }
+}
+
+function skipEpisodeHeader() {
+  if (player) {
+    player.currentTime = episodeStore.headerTimes[videoId] ?? 0
+  }
+}
+
+function handleEpisodeHeaderTimeSkipSetClick() {
+  episodeStore.headerTimes[videoId] = Math.floor(player?.currentTime || 0)
+}
+
+function handleEpisodeTailTimeSkipSetClick() {
+  if (player) {
+    const remainTime = player.duration - player.currentTime
+    episodeStore.tailTimes[videoId] = Math.floor(remainTime)
+  }
+  else {
+    episodeStore.tailTimes[videoId] = 0
   }
 }
 </script>

@@ -10,7 +10,7 @@ if (darkMediaQuery.matches) {
 else {
   document.body.classList.remove('dark')
 }
-darkMediaQuery.addEventListener('change', (e) => {
+darkMediaQuery.addEventListener('change', (_) => {
   document.body.classList.toggle('dark')
 })
 </script>
