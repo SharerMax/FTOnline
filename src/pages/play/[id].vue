@@ -14,16 +14,21 @@
           跳过片尾 {{ episodeStore.tailTimes[videoId] ?? 0 }}s
         </button>
       </div>
-      <div class="mt-4 flex flex-wrap gap-2">
-        <button
-          v-for="(episode, index) in episodes"
-          :key="index"
-          class="border-1 border-orange text-orange bg-transparent rounded cursor-pointer mr-2 [&.active]:(bg-orange text-white)"
-          :class="{ active: selectedEpisodeIndex === index }"
-          @click="handleEpisodeClick(episode, index)"
-        >
-          {{ episode.episodeName }}
-        </button>
+      <div>
+        <div class="flex items-center text-5">
+          <h3>剧集</h3> <button class="ml-2 inline-block i-carbon-sort-ascending color-orange [&.desc]:(i-carbon-sort-descending color-orange)" :class="{ desc: episodeSort === 'desc' } " @click="handleToggleEpisodeSort" />
+        </div>
+        <div class="grid grid-cols-8 gap-2">
+          <button
+            v-for="(episode, index) in episodes"
+            :key="index"
+            class="border-1 border-orange text-orange bg-transparent rounded cursor-pointer mr-2 [&.active]:(bg-orange text-white)"
+            :class="{ active: selectedEpisodeButtonIndex === index }"
+            @click="handleEpisodeClick(episode, index)"
+          >
+            {{ episode.episodeName }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -41,9 +46,11 @@ import useEpisodeStore from '@/store/useEpisodeStore'
 const route = useRoute()
 const videoId = route.params.id as string
 
+const episodeSort = ref<'asc' | 'desc'>('asc')
 const videoDetail = ref<VideoDetail | null>(null)
 const episodes = computed(() => {
-  return (videoDetail.value?.vod_play_url.split('#') ?? []).map(parseEpisode)
+  const list = (videoDetail.value?.vod_play_url.split('#') ?? []).map(parseEpisode)
+  return episodeSort.value === 'asc' ? list : list.reverse()
 })
 const episodesCount = computed(() => {
   return episodes.value.length
@@ -83,6 +90,9 @@ function playM3u8(video: HTMLMediaElement, url: string, art: Artplayer) {
 }
 const selectedEpisodeIndex = ref(0)
 const episodeStore = useEpisodeStore()
+const selectedEpisodeButtonIndex = computed(() => {
+  return episodeSort.value === 'asc' ? selectedEpisodeIndex.value : episodesCount.value - 1 - selectedEpisodeIndex.value
+})
 
 let player: Artplayer | null = null
 onMounted(() => {
@@ -136,9 +146,18 @@ onBeforeUnmount(() => {
   player?.destroy(false)
   player = null
 })
+
+function handleToggleEpisodeSort() {
+  episodeSort.value = episodeSort.value === 'asc' ? 'desc' : 'asc'
+}
+
 function handleEpisodeClick(episode: ReturnType<typeof parseEpisode>, index: number) {
-  selectedEpisodeIndex.value = index
-  console.log(episode)
+  if (episodeSort.value === 'desc') {
+    selectedEpisodeIndex.value = episodesCount.value - 1 - index
+  }
+  else {
+    selectedEpisodeIndex.value = index
+  }
   playEpisode(episode)
 }
 
