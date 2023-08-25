@@ -8,5 +8,6 @@ import '@unocss/reset/sanitize/assets.css'
 import './style/common.css'
 import 'uno.css'
 import store from './store'
+import './utils/autoDarkClass'
 
 createApp(App).use(store).use(router).mount('#app')

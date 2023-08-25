@@ -34,6 +34,7 @@ export default defineConfig({
     },
   },
   build: {
+    target: browserslist(),
     rollupOptions: {
       output: {
         assetFileNames: (assetInfo) => {
