@@ -1,3 +1,5 @@
+const process = require('node:process')
+
 module.exports = {
   env: {
     browser: true,
@@ -12,7 +14,7 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'curly': ['error', 'all'],
-    'vue/component-tags-order': ['error', {
+    'vue/block-order': ['error', {
       order: ['template', 'script', 'style'],
     }],
     'vue/max-attributes-per-line': ['error', {
