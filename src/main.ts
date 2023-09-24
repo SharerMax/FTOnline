@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { type Directive, createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 
@@ -9,4 +9,8 @@ import './style/common.css'
 import 'uno.css'
 import store from './store'
 
-createApp(App).use(store).use(router).mount('#app')
+createApp(App).directive('focus', {
+  mounted(el) {
+    el.focus()
+  },
+} satisfies Directive<HTMLElement>).use(store).use(router).mount('#app')

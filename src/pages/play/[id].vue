@@ -16,13 +16,13 @@
       </div>
       <div>
         <div class="flex items-center text-5">
-          <h3>剧集</h3> <button class="ml-2 inline-block i-carbon-sort-ascending color-orange [&.desc]:(i-carbon-sort-descending color-orange)" :class="{ desc: episodeSort === 'desc' } " @click="handleToggleEpisodeSort" />
+          <h3>剧集</h3> <button class="cursor-pointer ml-2 inline-block i-carbon-sort-ascending color-orange [&.desc]:(i-carbon-sort-descending color-orange)" :class="{ desc: episodeSort === 'desc' } " @click="handleToggleEpisodeSort" />
         </div>
         <div class="grid grid-cols-8 gap-2">
           <button
             v-for="(episode, index) in episodes"
             :key="index"
-            class="border-1 border-orange text-orange bg-transparent rounded cursor-pointer mr-2 [&.active]:(bg-orange text-white)"
+            class="border-1 border-orange text-orange  bg-transparent rounded cursor-pointer ![&.active]:(bg-orange text-white border-orange) hover:(border-yellow text-yellow)"
             :class="{ active: selectedEpisodeButtonIndex === index }"
             @click="handleEpisodeClick(episode, index)"
           >
