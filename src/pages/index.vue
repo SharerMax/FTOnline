@@ -34,9 +34,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import svg from '@/assets/img/logo.svg?raw'
 
-console.log(svg)
 const input = ref('')
 const router = useRouter()
 function handleSearchClick() {

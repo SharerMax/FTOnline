@@ -12,7 +12,7 @@ export interface VideoDetail {
   vod_area: string
   vod_year: string
   vod_score: string
-  type_name: string
+  type_name?: string
   type_id: string
 }
 

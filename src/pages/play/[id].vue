@@ -43,8 +43,8 @@ import Hls from 'hls.js'
 import type { VideoDetail } from '@/types'
 import useEpisodeStore from '@/store/useEpisodeStore'
 
-const route = useRoute()
-const videoId = route.params.id as string
+const route = useRoute('/play/[id]')
+const videoId = route.params.id
 
 const episodeSort = ref<'asc' | 'desc'>('asc')
 const videoDetail = ref<VideoDetail | null>(null)

@@ -21,7 +21,7 @@
                 :area="video.vod_area"
                 :language="video.vod_lang"
                 :remark="video.vod_remarks"
-                :type="video.type_name"
+                :type="video.type_name || '未知'"
                 :year="video.vod_year"
                 :director="video.vod_director"
                 :poster="video.vod_pic"
@@ -54,16 +54,13 @@ import MediaItem from '@/components/MediaItem.vue'
 import Pagination from '@/components/Pagination.vue'
 import type { ApiResponse, VideoDetail } from '@/types'
 
-const props = defineProps<{
-  page: string
-}>()
-const route = useRoute()
+const route = useRoute('/search/[page]')
 const keyWord = route.query.kw as string
+const page = route.params.page
 const input = ref(keyWord || '')
 const videoList = ref<VideoDetail[]>([])
-console.log(props.page)
 const pagination = reactive({
-  page: props.page ? +props.page : 1,
+  page: page ? +page : 1,
   total: 0,
   size: 10,
 })
