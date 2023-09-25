@@ -5,8 +5,8 @@
   ],
   "compilerOptions": {
     "composite": true,
-    "types": ["node"],
-    "moduleResolution": "Bundler"
+    "moduleResolution": "Bundler",
+    "types": ["node"]
   },
   "include": ["vite.config.ts", "uno.config.ts"]
 }
