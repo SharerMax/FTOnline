@@ -14,6 +14,7 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'curly': ['error', 'all'],
+    'no-unused-vars': ['warn'],
     'vue/block-order': ['error', {
       order: ['template', 'script', 'style'],
     }],

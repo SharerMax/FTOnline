@@ -7,7 +7,7 @@ import '@unocss/reset/sanitize/sanitize.css'
 import '@unocss/reset/sanitize/assets.css'
 import './style/common.css'
 import 'uno.css'
-import store from './store'
+import store from '@/store'
 
 createApp(App).directive('focus', {
   mounted(el) {

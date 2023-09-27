@@ -46,13 +46,13 @@
 </template>
 
 <script setup lang="ts">
-import axios from 'axios'
 import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { RouteLocationRaw } from 'vue-router'
 import MediaItem from '@/components/MediaItem.vue'
 import Pagination from '@/components/Pagination.vue'
-import type { ApiResponse, VideoDetail } from '@/types'
+import type { VideoDetail } from '@/types'
+import { queryVideoList } from '@/api'
 
 const route = useRoute('/search/[page]')
 const keyWord = route.query.kw as string
@@ -69,11 +69,11 @@ const router = useRouter()
 const loading = ref(false)
 function searchVideoList(keyword: string, page = 1) {
   loading.value = true
-  axios.get<ApiResponse<VideoDetail>>(`https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(`https://api.1080zyku.com/inc/apijson.php?ac=detail&wd=${keyword}&pg=${page}`)}`).then((res) => {
-    pagination.total = res.data.total
-    pagination.page = res.data.page
-    pagination.size = res.data.limit
-    videoList.value = res.data.list
+  queryVideoList(keyword, page).then((res) => {
+    pagination.total = res.total
+    pagination.page = res.page
+    pagination.size = res.limit
+    videoList.value = res.list
   }).finally(() => loading.value = false)
 }
 
