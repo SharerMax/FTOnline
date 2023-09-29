@@ -72,7 +72,7 @@ function searchVideoList(keyword: string, page = 1) {
   queryVideoList(keyword, page).then((res) => {
     pagination.total = res.total
     pagination.page = res.page
-    pagination.size = res.limit
+    pagination.size = +res.limit
     videoList.value = res.list
   }).finally(() => loading.value = false)
 }

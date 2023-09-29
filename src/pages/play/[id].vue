@@ -37,11 +37,11 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import axios from 'axios'
 import Artplayer from 'artplayer'
 import Hls from 'hls.js'
 import type { VideoDetail } from '@/types'
 import useEpisodeStore from '@/store/useEpisodeStore'
+import { queryVideosDetail } from '@/api'
 
 const route = useRoute('/play/[id]')
 const videoId = route.params.id
@@ -63,9 +63,9 @@ function parseEpisode(url: string) {
   }
 }
 async function getVideoDetail(id: string) {
-  const res = await axios.get(`https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(`https://api.1080zyku.com/inc/apijson.php?ac=detail&ids=${id}`)}`)
-  if (res.data.list && res.data.list.length > 0) {
-    return res.data.list[0] as VideoDetail
+  const res = await queryVideosDetail(id)
+  if (res.list && res.list.length > 0) {
+    return res.list[0] as VideoDetail
   }
   return null
 }

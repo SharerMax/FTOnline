@@ -18,7 +18,7 @@ export interface VideoDetail {
 
 export interface ApiResponse<T> {
   code: number
-  limit: number
+  limit: number | string
   page: number
   pageCount: number
   total: number
