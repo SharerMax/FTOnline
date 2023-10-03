@@ -25,6 +25,14 @@
           placeholder="想看啥？"
           @keyup.enter="handleSearchClick"
         >
+        <select v-model="provider" class="bg-transparent color-orange border-none outline-none px-2">
+          <option value="hdzyk">
+            高清资源
+          </option>
+          <option value="xinlang">
+            新浪资源
+          </option>
+        </select>
         <button class="i-carbon:search h-4 w-4 border-none px-5 cursor-pointer color-orange flex-none" @click="handleSearchClick" />
       </div>
     </div>
@@ -37,9 +45,14 @@ import { useRouter } from 'vue-router'
 
 const input = ref('')
 const router = useRouter()
+const provider = ref('hdzyk')
 function handleSearchClick() {
   router.push({
-    path: '/search/1',
+    name: '/search/[provider]/[page]',
+    params: {
+      provider: provider.value,
+      page: 1,
+    },
     query: {
       kw: input.value,
     },
@@ -50,12 +63,3 @@ function handleSearchClick() {
 <style scoped>
 
 </style>
-
-<route lang="json5">
-  {
-    "meta": {
-      "layout": "default",
-      "title": "Home"
-    }
-  }
-</route>

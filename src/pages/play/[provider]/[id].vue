@@ -42,9 +42,11 @@ import Hls from 'hls.js'
 import type { VideoDetail } from '@/types'
 import useEpisodeStore from '@/store/useEpisodeStore'
 import { queryVideosDetail } from '@/api'
+import type { SupportedProviderName } from '@/api/types'
 
-const route = useRoute('/play/[id]')
+const route = useRoute('/play/[provider]/[id]')
 const videoId = route.params.id
+const providerName = route.params.provider as SupportedProviderName
 
 const episodeSort = ref<'asc' | 'desc'>('asc')
 const videoDetail = ref<VideoDetail | null>(null)
@@ -63,8 +65,9 @@ function parseEpisode(url: string) {
   }
 }
 async function getVideoDetail(id: string) {
-  const res = await queryVideosDetail(id)
+  const res = await queryVideosDetail(id, providerName)
   if (res.list && res.list.length > 0) {
+    console.log(res)
     return res.list[0] as VideoDetail
   }
   return null

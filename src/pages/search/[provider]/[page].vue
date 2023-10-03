@@ -8,6 +8,14 @@
           class="outline-none leading-8 flex-1 px-2  color-orange border-none dark:(bg-dark-800)"
           @keyup.enter="handleSearchClick"
         >
+        <select v-model="providerName" class="bg-transparent color-orange border-none outline-none px-2">
+          <option value="hdzyk">
+            高清资源
+          </option>
+          <option value="xinlang">
+            新浪资源
+          </option>
+        </select>
         <button class="i-carbon:search h-4 w-4 border-none px-5 cursor-pointer flex-none color-orange" @click="handleSearchClick" />
       </div>
       <div>
@@ -48,15 +56,18 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { RouteLocationRaw } from 'vue-router'
+
+import type { RouteLocationRaw } from 'vue-router/auto'
 import MediaItem from '@/components/MediaItem.vue'
 import Pagination from '@/components/Pagination.vue'
 import type { VideoDetail } from '@/types'
 import { queryVideoList } from '@/api'
+import type { SupportedProviderName } from '@/api/types'
 
-const route = useRoute('/search/[page]')
+const route = useRoute('/search/[provider]/[page]')
 const keyWord = route.query.kw as string
 const page = route.params.page
+const providerName = ref(route.params.provider as SupportedProviderName)
 const input = ref(keyWord || '')
 const videoList = ref<VideoDetail[]>([])
 const pagination = reactive({
@@ -69,7 +80,7 @@ const router = useRouter()
 const loading = ref(false)
 function searchVideoList(keyword: string, page = 1) {
   loading.value = true
-  queryVideoList(keyword, page).then((res) => {
+  queryVideoList(keyword, page, providerName.value).then((res) => {
     pagination.total = res.total
     pagination.page = res.page
     pagination.size = +res.limit
@@ -78,17 +89,21 @@ function searchVideoList(keyword: string, page = 1) {
 }
 
 function updatePage(page: number) {
-  const routeLocation: RouteLocationRaw = {
-    path: `/search/${page}`,
+  const routeLocationRaw: RouteLocationRaw<'/search/[provider]/[page]'> = {
+    name: '/search/[provider]/[page]',
+    params: {
+      provider: providerName.value,
+      page: `${page}`,
+    },
     query: {
       kw: input.value,
     },
   }
   if (pagination.page === page) {
-    router.replace(routeLocation)
+    router.replace(routeLocationRaw)
   }
   else {
-    router.push(routeLocation)
+    router.push(routeLocationRaw)
   }
 
   searchVideoList(input.value, page)
@@ -106,7 +121,11 @@ onMounted(() => {
 })
 function handlePlayClick(videoId: string) {
   router.push({
-    path: `/play/${videoId}`,
+    name: '/play/[provider]/[id]',
+    params: {
+      provider: providerName.value,
+      id: videoId,
+    },
   })
 }
 </script>

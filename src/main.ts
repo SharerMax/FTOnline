@@ -9,6 +9,7 @@ import './style/common.css'
 import 'uno.css'
 import store from '@/store'
 
+console.log(router.getRoutes())
 createApp(App).directive('focus', {
   mounted(el) {
     el.focus()

@@ -6,6 +6,7 @@ const corsProxyClient = axios.create({
   baseURL: 'https://api.codetabs.com/v1/proxy',
 })
 const HDZYKProvider: Provider = {
+  name: 'hdzyk',
   queryVideoList(keyword: string, page: number): Promise<ApiResponse<VideoDetail>> {
     return corsProxyClient.get<ApiResponse<VideoDetail>>('', {
       params: {
@@ -23,17 +24,18 @@ const HDZYKProvider: Provider = {
 }
 
 const XinLangProvider: Provider = {
+  name: 'xinlang',
   queryVideoList(keyword: string, page: number): Promise<ApiResponse<VideoDetail>> {
     return corsProxyClient.get<ApiResponse<VideoDetail>>('', {
       params: {
-        quest: `https://api.xinlangapi.com/xinlangapi.php/provide/vod?ac=detail&wd=${keyword}&pg=${page}`,
+        quest: `https://api.xinlangapi.com/xinlangapi.php/provide/vod/from/xlm3u8/?ac=detail&wd=${keyword}&pg=${page}`,
       },
     }).then(res => res.data)
   },
   queryVideosDetail(ids: string): Promise<ApiResponse<VideoDetail>> {
     return corsProxyClient.get<ApiResponse<VideoDetail>>('', {
       params: {
-        quest: `https://api.xinlangapi.com/xinlangapi.php/provide/vod?ac=detail&ids=${ids}`,
+        quest: `https://api.xinlangapi.com/xinlangapi.php/provide/vod/from/xlm3u8/?ac=detail&ids=${ids}`,
       },
     }).then(res => res.data)
   },
@@ -49,6 +51,9 @@ const Providers = {
         return XinLangProvider
       }
     }
+  },
+  isSupportedName(name: string): name is SupportedProviderName {
+    return name === 'hdzyk' || name === 'xinlang'
   },
 }
 
