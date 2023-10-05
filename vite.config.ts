@@ -2,8 +2,10 @@ import * as path from 'node:path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import Unocss from 'unocss/vite'
+
 // import Pages from 'vite-plugin-pages'
 import VueRouter from 'unplugin-vue-router/vite'
+import svgLoader from 'vite-svg-loader'
 
 // @ts-expect-error types file not declare in `exports` field
 import Layouts from 'vite-plugin-vue-layouts'
@@ -19,6 +21,7 @@ export default defineConfig({
       dts: 'src/vite-plugin-vue-router.d.ts',
     }),
     vue(),
+    svgLoader(),
     Unocss(),
     // Pages({
     //   resolver: 'vue',
