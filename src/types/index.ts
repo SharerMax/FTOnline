@@ -1,5 +1,5 @@
 export interface VideoDetail {
-  vod_id: string
+  vod_id: string | number
   vod_name: string
   vod_sub: string
   vod_pic: string
@@ -19,7 +19,7 @@ export interface VideoDetail {
 export interface ApiResponse<T> {
   code: number
   limit: number | string
-  page: number
+  page: number | string
   pageCount: number
   total: number
   msg: string

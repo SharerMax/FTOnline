@@ -12,8 +12,26 @@
           <option value="hdzyk">
             高清资源
           </option>
-          <option value="xinlang">
-            新浪资源
+          <option value="hongniu">
+            红牛资源
+          </option>
+          <option value="feifan">
+            非凡资源
+          </option>
+          <option value="ikun">
+            iKun 资源
+          </option>
+          <option value="shandian">
+            闪电资源
+          </option>
+          <option value="tiankong">
+            天空资源
+          </option>
+          <option value="liangzi">
+            量子资源
+          </option>
+          <option value="guangsu">
+            光速资源
           </option>
         </select>
         <button class="i-carbon:search h-4 w-4 border-none px-5 cursor-pointer flex-none color-orange" @click="handleSearchClick" />
@@ -24,7 +42,7 @@
           <ul v-show="!loading" class="list-none p-0 space-y-4">
             <li v-for="video in videoList" :key="video.vod_id">
               <MediaItem
-                :id="video.vod_id"
+                :id="`${video.vod_id}`"
                 :actor="video.vod_actor"
                 :area="video.vod_area"
                 :language="video.vod_lang"
@@ -82,7 +100,7 @@ function searchVideoList(keyword: string, page = 1) {
   loading.value = true
   queryVideoList(keyword, page, providerName.value).then((res) => {
     pagination.total = res.total
-    pagination.page = res.page
+    pagination.page = +res.page
     pagination.size = +res.limit
     videoList.value = res.list
   }).finally(() => loading.value = false)
