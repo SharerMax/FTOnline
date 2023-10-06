@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config-vue": "^0.43.1",
-    "@iconify/json": "^2.2.124",
+    "@iconify/json": "^2.2.125",
     "@iconify/utils": "^2.1.11",
     "@tsconfig/node18": "^18.2.2",
     "@types/node": "^18.18.3",

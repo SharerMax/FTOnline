@@ -2,7 +2,7 @@
   <div class="flex justify-center">
     <div class="max-w-lg w-full pt-14 pb-3">
       <div class="text-center color-orange">
-        <a href="/" class="text-6 color-orange decoration-none flex-inline items-center"><span class="i-ft-logo inline-block mr-2"></span> FT Online</a>
+        <a href="/" class="text-6 color-orange decoration-none flex-inline items-center"><span class="i-ft-logo inline-block mr-2" /> FT Online</a>
       </div>
       <div class="text-4/8 mt-2 flex justify-center items-center border-1 border-orange border-solid rounded overflow-hidden">
         <input
