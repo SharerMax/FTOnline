@@ -1,10 +1,53 @@
 import axios from 'axios'
 import type { Provider, SupportedProviderName, UniversalProviderName } from './types'
-import type { ApiResponse, VideoDetail } from '@/types'
+import type { ApiResponse, ApiResponseWithClass, VideoBrief, VideoDetail, VideoType } from '@/types'
 
 const corsProxyClient = axios.create({
-  baseURL: 'https://api.codetabs.com/v1/proxy',
+  // baseURL: 'http://127.0.0.1:8787/api/proxy',
+  baseURL: 'https://ft-online.stupidname.tk/api/proxy',
 })
+
+class UniversalProvider<T extends UniversalProviderName> implements Provider<T> {
+  readonly name: T
+  readonly apiUrl: string
+  constructor(name: T, apiUrl: string) {
+    this.name = name
+    this.apiUrl = apiUrl
+  }
+
+  queryVideoList(keyword: string, page: number): Promise<ApiResponse<VideoDetail>> {
+    return corsProxyClient.get<ApiResponse<VideoDetail>>('', {
+      params: {
+        url: `${this.apiUrl}?ac=detail&wd=${keyword}&pg=${page}`,
+      },
+    }).then(res => res.data)
+  }
+
+  queryVideosDetail(ids: string): Promise<ApiResponse<VideoDetail>> {
+    return corsProxyClient.get<ApiResponse<VideoDetail>>('', {
+      params: {
+        url: `${this.apiUrl}?ac=detail&ids=${ids}`,
+      },
+    }).then(res => res.data)
+  }
+
+  queryVideoBriefList(keyword: string, page: number): Promise<ApiResponseWithClass<VideoBrief>> {
+    return corsProxyClient.get<ApiResponseWithClass<VideoBrief>>('', {
+      params: {
+        url: `${this.apiUrl}?ac=list&wd=${keyword}&pg=${page}`,
+      },
+    }).then(res => res.data)
+  }
+
+  queryVideoTypes(): Promise<VideoType[]> {
+    return this.queryVideoBriefList('', 1).then(res => res.class)
+  }
+}
+
+function generateUniversalProvider<T extends UniversalProviderName>(name: T, apiUrl: string): Provider<T> {
+  return new UniversalProvider(name, apiUrl)
+}
+
 // 高清资源 https://www.hdzyk.com/
 const HDZYKProvider = generateUniversalProvider('hdzyk', 'https://api.1080zyku.com/inc/apijson.php')
 // 新浪资源 https://xinlangzy.com/
@@ -23,26 +66,6 @@ const TianKongProvider = generateUniversalProvider('tiankong', ' https://api.tia
 const LiangZiProvier = generateUniversalProvider('liangzi', 'https://cj.lziapi.com/api.php/provide/vod/from/lzm3u8/at/json/')
 // 光速资源 https://www.guangsuzy.com/
 const GuangSuProvider = generateUniversalProvider('guangsu', 'https://api.guangsuapi.com/api.php/provide/vod/from/gsm3u8/')
-
-function generateUniversalProvider<T extends UniversalProviderName>(name: T, apiUrl: string): Provider<T> {
-  return {
-    name,
-    queryVideoList(keyword: string, page: number): Promise<ApiResponse<VideoDetail>> {
-      return corsProxyClient.get<ApiResponse<VideoDetail>>('', {
-        params: {
-          quest: `${apiUrl}?ac=detail&wd=${keyword}&pg=${page}`,
-        },
-      }).then(res => res.data)
-    },
-    queryVideosDetail(ids: string): Promise<ApiResponse<VideoDetail>> {
-      return corsProxyClient.get<ApiResponse<VideoDetail>>('', {
-        params: {
-          quest: `${apiUrl}?ac=detail&ids=${ids}`,
-        },
-      }).then(res => res.data)
-    },
-  }
-}
 
 const Providers = {
   of(name: SupportedProviderName): Provider {

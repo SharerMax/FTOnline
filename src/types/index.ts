@@ -25,3 +25,24 @@ export interface ApiResponse<T> {
   msg: string
   list: T[]
 }
+
+export interface ApiResponseWithClass<T> extends ApiResponse<T> {
+  class: VideoType[]
+}
+
+export interface VideoBrief {
+  vod_id: string
+  vod_name: string
+  type_id: string
+  type_name: string
+  vod_en: string
+  vod_time: string
+  vod_remarks: string
+  vod_play_from: string
+}
+
+export interface VideoType {
+  type_id: string
+  type_name: string
+  type_pid?: string
+}
