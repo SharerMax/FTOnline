@@ -2,9 +2,9 @@ import Providers from './providers'
 import type { SupportedProviderName } from './types'
 import type { ApiResponse, VideoDetail, VideoType } from '@/types'
 
-export function queryVideoList(keyword: string, page: number, providerName: SupportedProviderName = 'hdzyk'): Promise<ApiResponse<VideoDetail>> {
+export function queryVideoList(keyword: string, page: number, videoType: string, providerName: SupportedProviderName = 'hdzyk'): Promise<ApiResponse<VideoDetail>> {
   const videoProvider = Providers.of(providerName)
-  return videoProvider.queryVideoList(keyword, page)
+  return videoProvider.queryVideoList(keyword, page, videoType)
 }
 
 export function queryVideosDetail(ids: string, providerName: SupportedProviderName = 'hdzyk'): Promise<ApiResponse<VideoDetail>> {

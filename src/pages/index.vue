@@ -25,56 +25,83 @@
           placeholder="想看啥？"
           @keyup.enter="handleSearchClick"
         >
-        <select v-model="provider" class="bg-transparent color-orange border-none outline-none px-2">
-          <option value="hdzyk">
-            高清资源
-          </option>
-          <option value="hongniu">
-            红牛资源
-          </option>
-          <option value="feifan">
-            非凡资源
-          </option>
-          <option value="ikun">
-            iKun 资源
-          </option>
-          <option value="shandian">
-            闪电资源
-          </option>
-          <option value="tiankong">
-            天空资源
-          </option>
-          <option value="liangzi">
-            量子资源
-          </option>
-          <option value="guangsu">
-            光速资源
+        <select :value="providerName" class="bg-transparent color-orange border-none outline-none px-2" @input="handleProviderChange($event)">
+          <option v-for="(provider, index) in allProviders" :key="index" :value="provider.name">
+            {{ provider.nickName }}
           </option>
         </select>
         <button class="i-carbon:search h-4 w-4 border-none px-5 cursor-pointer color-orange flex-none" @click="handleSearchClick" />
+      </div>
+      <div class="mt-4 flex gap-1 flex-wrap">
+        <button
+          v-for="(type, index) in videoTypes"
+          :key="index"
+          class="btn"
+          @click="handleTypeClick(type)"
+        >
+          {{ type.type_name }}
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import type { SupportedProviderName } from '@/api/types'
+import { queryVideoTypes } from '@/api'
+import type { VideoType } from '@/types'
+import Providers from '@/api/providers'
 
 const input = ref('')
 const router = useRouter()
-const provider = ref('hdzyk')
+const providerName = ref<SupportedProviderName>('hdzyk')
+const videoTypes = ref<VideoType[]>([])
+const allProviders = Providers.all()
 function handleSearchClick() {
   router.push({
     name: '/search/[provider]/[page]',
     params: {
-      provider: provider.value,
+      provider: providerName.value,
       page: 1,
     },
     query: {
       kw: input.value,
     },
   })
+}
+function handleTypeClick(type: VideoType) {
+  router.push({
+    name: '/search/[provider]/[page]',
+    params: {
+      provider: providerName.value,
+      page: 1,
+    },
+    query: {
+      kw: input.value,
+      type: type.type_id,
+    },
+  })
+}
+onMounted(() => {
+  updateVideoTypes(providerName.value)
+})
+function updateVideoTypes(name: SupportedProviderName) {
+  queryVideoTypes(name).then((res) => {
+    console.log(res)
+    videoTypes.value = res
+  })
+}
+function handleProviderChange(event: Event) {
+  if (event.currentTarget instanceof HTMLSelectElement) {
+    const name = event.currentTarget.value as SupportedProviderName
+    if (providerName.value === name) {
+      return
+    }
+    providerName.value = name
+    updateVideoTypes(name)
+  }
 }
 </script>
 

@@ -22,7 +22,7 @@
           <button
             v-for="(episode, index) in episodes"
             :key="index"
-            class="border-1 border-orange text-orange  bg-transparent rounded cursor-pointer ![&.active]:(bg-orange text-white border-orange) hover:(border-yellow text-yellow)"
+            class="btn ![&.active]:(bg-orange text-white border-orange)"
             :class="{ active: selectedEpisodeButtonIndex === index }"
             @click="handleEpisodeClick(episode, index)"
           >
