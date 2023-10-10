@@ -4,7 +4,7 @@ import type { ApiResponse, ApiResponseWithClass, VideoBrief, VideoDetail, VideoT
 
 const corsProxyClient = axios.create({
   // baseURL: 'http://127.0.0.1:8787/api/proxy',
-  baseURL: 'https://ft-online.stupidname/.tk/api/proxy',
+  baseURL: 'https://ft-online.stupidname.tk/api/proxy',
 })
 
 class UniversalProvider<T extends UniversalProviderName> implements Provider<T> {
