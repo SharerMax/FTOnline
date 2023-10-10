@@ -1,4 +1,3 @@
-import { type } from 'node:os'
 import type { ApiResponse, ApiResponseWithClass, VideoBrief, VideoDetail, VideoType } from '@/types'
 
 export type UniversalProviderName = 'hdzyk' | 'xinlang' | 'hongniu' | 'feifan' | 'ikun' | 'shandian' | 'tiankong' | 'liangzi' | 'guangsu'

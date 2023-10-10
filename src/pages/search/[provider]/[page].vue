@@ -99,7 +99,6 @@ onMounted(() => {
 })
 function updateVideoTypes(name: SupportedProviderName) {
   queryVideoTypes(name).then((res) => {
-    console.log(res)
     videoTypes.value = res
   })
 }
