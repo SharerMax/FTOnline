@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter } from 'vue-router/auto'
 import type { SupportedProviderName } from '@/api/types'
 import { queryVideoTypes } from '@/api'
 import type { VideoType } from '@/types'

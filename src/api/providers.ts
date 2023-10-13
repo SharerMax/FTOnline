@@ -3,8 +3,7 @@ import type { Provider, SupportedProviderName, UniversalProviderName } from './t
 import type { ApiResponse, ApiResponseWithClass, VideoBrief, VideoDetail, VideoType } from '@/types'
 
 const corsProxyClient = axios.create({
-  // baseURL: 'http://127.0.0.1:8787/api/proxy',
-  baseURL: 'https://ft-online.stupidname.tk/api/proxy',
+  baseURL: import.meta.env.VITE_PROVIDER_PROXY_API_URL,
 })
 
 class UniversalProvider<T extends UniversalProviderName> implements Provider<T> {
