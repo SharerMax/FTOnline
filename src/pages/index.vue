@@ -1,6 +1,6 @@
 <template>
-  <div class=" color-orange-500">
-    <div class="w-100 pt-80 mx-auto">
+  <div class=" color-orange-500 px-4 flex items-center justify-center">
+    <div class="w-100 max-w-full mx-auto">
       <h1 class="flex justify-center items-center text-orange m-0">
         <svg
           xmlns="http://www.w3.org/2000/svg"

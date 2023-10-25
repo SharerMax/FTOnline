@@ -39,6 +39,7 @@ import { useRoute } from 'vue-router'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import Artplayer from 'artplayer'
 import Hls from 'hls.js'
+import { debounce, throttle } from 'throttle-debounce'
 import type { VideoDetail } from '@/types'
 import useEpisodeStore from '@/store/useEpisodeStore'
 import { queryVideosDetail } from '@/api'
@@ -126,16 +127,22 @@ onMounted(() => {
   player.on('restart', () => {
     skipEpisodeHeader()
   })
-
+  const playNext = debounce(3000, () => {
+    // console.log('playNext')
+    playNextEpisode()
+  }, {
+    atBegin: true,
+  })
   player.on('video:timeupdate', () => {
-    // console.log(event)
+    console.log(player!.currentTime)
 
     const currentTime = player!.currentTime
     const duration = player!.duration
     const remainTime = duration - currentTime
     const skipTailTime = episodeStore.tailTimes[videoId] ?? 0
     if (player!.duration > 0 && remainTime <= skipTailTime) {
-      playNextEpisode()
+      // console.log(player!.currentTime, remainTime, skipTailTime)
+      playNext()
     }
   })
   getVideoDetail(videoId).then((detail) => {
@@ -171,6 +178,7 @@ function playEpisode(episode: ReturnType<typeof parseEpisode>) {
 }
 
 function playNextEpisode() {
+  console.log('playNextEpisode')
   if (selectedEpisodeIndex.value < episodesCount.value - 1) {
     selectedEpisodeIndex.value += 1
     playEpisode(episodes.value[selectedEpisodeIndex.value])
