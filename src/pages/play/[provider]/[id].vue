@@ -7,12 +7,20 @@
       </h2>
       <div id="player" class="w-full aspect-16/9" />
       <div class="mt-4 flex">
-        <button class="bg-orange color-white rounded border-none py-.5 cursor-pointer" @click="handleEpisodeHeaderTimeSkipSetClick ">
-          跳过片头 {{ episodeStore.headerTimes[videoId] ?? 0 }}s
-        </button>
-        <button class="bg-orange color-white rounded border-none py-.5 cursor-pointer ml-a" @click="handleEpisodeTailTimeSkipSetClick ">
-          跳过片尾 {{ episodeStore.tailTimes[videoId] ?? 0 }}s
-        </button>
+        <div class="bg-orange rounded px-2 flex items-center">
+          <button class=" color-white bg-transparent border-none p-0  cursor-pointer" @click="handleEpisodeHeaderTimeSkipSetClick ">
+            跳过片头 {{ episodeStore.headerTimes[videoId] ?? 0 }}s
+          </button>
+          <div class="bg-gray-200 h-4 w-px mx-2" />
+          <button class="i-lucide-timer-reset p-0 border-none inline-block cursor-pointer" @click="handleEpisodeHeaderTimeSkipResetClick" />
+        </div>
+        <div class="ml-a bg-orange rounded px-2 flex items-center">
+          <button class=" color-white bg-transparent border-none p-0  cursor-pointer" @click="handleEpisodeTailTimeSkipSetClick ">
+            跳过片尾 {{ episodeStore.tailTimes[videoId] ?? 0 }}s
+          </button>
+          <div class="bg-gray-200 h-4 w-px mx-2" />
+          <button class="i-lucide-timer-reset p-0 border-none inline-block cursor-pointer" @click="handleEpisodeTailTimeSkipResetClick" />
+        </div>
       </div>
       <div>
         <div class="flex items-center text-5">
@@ -39,7 +47,7 @@ import { useRoute } from 'vue-router'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import Artplayer from 'artplayer'
 import Hls from 'hls.js'
-import { debounce, throttle } from 'throttle-debounce'
+import { debounce } from 'throttle-debounce'
 import type { VideoDetail } from '@/types'
 import useEpisodeStore from '@/store/useEpisodeStore'
 import { queryVideosDetail } from '@/api'
@@ -134,7 +142,7 @@ onMounted(() => {
     atBegin: true,
   })
   player.on('video:timeupdate', () => {
-    console.log(player!.currentTime)
+    // console.log(player!.currentTime)
 
     const currentTime = player!.currentTime
     const duration = player!.duration
@@ -194,7 +202,9 @@ function skipEpisodeHeader() {
 function handleEpisodeHeaderTimeSkipSetClick() {
   episodeStore.headerTimes[videoId] = Math.floor(player?.currentTime || 0)
 }
-
+function handleEpisodeHeaderTimeSkipResetClick() {
+  episodeStore.headerTimes[videoId] = 0
+}
 function handleEpisodeTailTimeSkipSetClick() {
   if (player) {
     const remainTime = player.duration - player.currentTime
@@ -203,6 +213,9 @@ function handleEpisodeTailTimeSkipSetClick() {
   else {
     episodeStore.tailTimes[videoId] = 0
   }
+}
+function handleEpisodeTailTimeSkipResetClick() {
+  episodeStore.tailTimes[videoId] = 0
 }
 </script>
 
