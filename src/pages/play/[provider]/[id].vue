@@ -7,19 +7,19 @@
       </h2>
       <div id="player" class="w-full aspect-16/9" />
       <div class="mt-4 flex">
-        <div class="bg-orange rounded px-2 flex items-center">
-          <button class=" color-white bg-transparent border-none p-0  cursor-pointer" @click="handleEpisodeHeaderTimeSkipSetClick ">
+        <div class="bg-orange rounded p-2 flex items-center">
+          <button class="  bg-transparent border-none p-0  cursor-pointer  color-white" @click="handleEpisodeHeaderTimeSkipSetClick ">
             跳过片头 {{ episodeStore.headerTimes[videoId] ?? 0 }}s
           </button>
           <div class="bg-gray-200 h-4 w-px mx-2" />
-          <button class="i-lucide-timer-reset p-0 border-none inline-block cursor-pointer" @click="handleEpisodeHeaderTimeSkipResetClick" />
+          <button class="i-lucide-timer-reset p-0 border-none inline-block cursor-pointer color-white" @click="handleEpisodeHeaderTimeSkipResetClick" />
         </div>
-        <div class="ml-a bg-orange rounded px-2 flex items-center">
-          <button class=" color-white bg-transparent border-none p-0  cursor-pointer" @click="handleEpisodeTailTimeSkipSetClick ">
+        <div class="ml-a bg-orange rounded p-2 flex items-center ">
+          <button class="  bg-transparent border-none p-0  cursor-pointer color-white" @click="handleEpisodeTailTimeSkipSetClick ">
             跳过片尾 {{ episodeStore.tailTimes[videoId] ?? 0 }}s
           </button>
           <div class="bg-gray-200 h-4 w-px mx-2" />
-          <button class="i-lucide-timer-reset p-0 border-none inline-block cursor-pointer" @click="handleEpisodeTailTimeSkipResetClick" />
+          <button class="i-lucide-timer-reset p-0 border-none inline-block cursor-pointer color-white" @click="handleEpisodeTailTimeSkipResetClick" />
         </div>
       </div>
       <div>
