@@ -148,7 +148,7 @@ onMounted(() => {
     const duration = player!.duration
     const remainTime = duration - currentTime
     const skipTailTime = episodeStore.tailTimes[videoId] ?? 0
-    if (player!.duration > 0 && remainTime <= skipTailTime) {
+    if (skipTailTime > 0 && player!.duration > 0 && remainTime <= skipTailTime) {
       // console.log(player!.currentTime, remainTime, skipTailTime)
       playNext()
     }
