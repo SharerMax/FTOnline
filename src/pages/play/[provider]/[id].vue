@@ -48,6 +48,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import Artplayer from 'artplayer'
 import Hls from 'hls.js'
 import { debounce } from 'throttle-debounce'
+import type { ComponentOption } from 'artplayer/types/component'
 import type { VideoDetail } from '@/types'
 import useEpisodeStore from '@/store/useEpisodeStore'
 import { queryVideosDetail } from '@/api'
@@ -122,11 +123,44 @@ onMounted(() => {
     pip: true,
     autoPlayback: true,
     theme: '#fb923c',
+    autoOrientation: true,
+    controls: [
+      {
+        name: 'previous-button',
+        index: 100,
+        position: 'left',
+        html: '<i class="i-ic-round-skip-previous w-7 h-7">',
+        tooltip: '上一集',
+        click() {
+          playPreviousEpisode()
+        },
+      },
+      {
+        name: 'next-button',
+        index: 101,
+        position: 'left',
+        html: '<i class="i-ic-round-skip-next w-7 h-7">',
+        tooltip: '下一集',
+        style: {
+        },
+        click() {
+          playNextEpisode()
+        },
+      },
+      // {
+      //   name: 'play-list',
+      //   position: 'right',
+      //   html: '<i class="i-ic-round-playlist-play w-7 h-7 block">',
+      //   tooltip: '剧集',
+      // },
+    ],
   })
   player.on('video:ended', () => {
     playNextEpisode()
   })
-
+  // player.on('video:loadedmetadata', () => {
+  //   console.log('video:loadedmetadata')
+  // })
   player.on('ready', () => {
     nextTick(() => {
       skipEpisodeHeader()
@@ -176,6 +210,19 @@ function handleEpisodeClick(episode: ReturnType<typeof parseEpisode>, index: num
   else {
     selectedEpisodeIndex.value = index
   }
+  if (player) {
+    const episodeControl: ComponentOption = {
+      name: 'episode',
+      html: episodes.value[index].episodeName,
+      position: 'right',
+    }
+    if (player.controls.episode) {
+      player.controls.update(episodeControl)
+    }
+    else {
+      player.controls.add(episodeControl)
+    }
+  }
   playEpisode(episode)
 }
 
@@ -193,8 +240,18 @@ function playNextEpisode() {
   }
 }
 
+function playPreviousEpisode() {
+  console.log('playPreviousEpisode')
+  if (selectedEpisodeIndex.value > 0) {
+    selectedEpisodeIndex.value -= 1
+    playEpisode(episodes.value[selectedEpisodeIndex.value])
+  }
+}
+
 function skipEpisodeHeader() {
+  console.log('skipEpisodeHeader')
   if (player) {
+    console.log(episodeStore.headerTimes[videoId])
     player.currentTime = episodeStore.headerTimes[videoId] ?? 0
   }
 }
