@@ -49,7 +49,7 @@ import Artplayer from 'artplayer'
 import Hls from 'hls.js'
 import { debounce } from 'throttle-debounce'
 import type { ComponentOption } from 'artplayer/types/component'
-import { useRouter } from 'vue-router/auto'
+import { onBeforeRouteLeave, useRouter } from 'vue-router/auto'
 import type { VideoDetail } from '@/types'
 import useEpisodeStore from '@/store/useEpisodeStore'
 import { queryVideosDetail } from '@/api'
@@ -254,9 +254,15 @@ function playEpisode(episode: ReturnType<typeof parseEpisode>) {
   }
 }
 
-watch(selectedEpisodeIndex, (newVal) => {
-  playEpisode(episodes.value[newVal])
-  updateEpisodeControl(episodes.value[newVal])
+const unSelectedEpisodeIndexWatch = watch(selectedEpisodeIndex, (newVal) => {
+  if (!Number.isNaN(newVal)) {
+    playEpisode(episodes.value[newVal])
+    updateEpisodeControl(episodes.value[newVal])
+  }
+})
+
+onBeforeRouteLeave(() => {
+  unSelectedEpisodeIndexWatch()
 })
 
 function isLastEpisode() {
