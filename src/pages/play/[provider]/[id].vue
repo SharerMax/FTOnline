@@ -210,10 +210,15 @@ function handleEpisodeClick(episode: ReturnType<typeof parseEpisode>, index: num
   else {
     selectedEpisodeIndex.value = index
   }
+  playEpisode(episode)
+  updateEpisodeControl(index)
+}
+
+function updateEpisodeControl(episodeIndex: number) {
   if (player) {
     const episodeControl: ComponentOption = {
       name: 'episode',
-      html: episodes.value[index].episodeName,
+      html: episodes.value[episodeIndex].episodeName,
       position: 'right',
     }
     if (player.controls.episode) {
@@ -223,7 +228,6 @@ function handleEpisodeClick(episode: ReturnType<typeof parseEpisode>, index: num
       player.controls.add(episodeControl)
     }
   }
-  playEpisode(episode)
 }
 
 function playEpisode(episode: ReturnType<typeof parseEpisode>) {
@@ -238,6 +242,7 @@ function playNextEpisode() {
     selectedEpisodeIndex.value += 1
     playEpisode(episodes.value[selectedEpisodeIndex.value])
   }
+  updateEpisodeControl(selectedEpisodeIndex.value)
 }
 
 function playPreviousEpisode() {
@@ -246,6 +251,7 @@ function playPreviousEpisode() {
     selectedEpisodeIndex.value -= 1
     playEpisode(episodes.value[selectedEpisodeIndex.value])
   }
+  updateEpisodeControl(selectedEpisodeIndex.value)
 }
 
 function skipEpisodeHeader() {
