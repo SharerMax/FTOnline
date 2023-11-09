@@ -161,10 +161,11 @@ function handleProviderNameChange(event: Event) {
 
 function handlePlayClick(videoId: string) {
   router.push({
-    name: '/play/[provider]/[id]',
+    name: '/play/[provider]/[videoId]/[episode]',
     params: {
       provider: providerName.value,
-      id: videoId,
+      videoId,
+      episode: 1,
     },
   })
 }

@@ -28,7 +28,7 @@
         </div>
         <div class="grid grid-cols-8 gap-2">
           <button
-            v-for="(episode, index) in episodes"
+            v-for="(episode, index) in episodesForButton"
             :key="index"
             class="btn ![&.active]:(bg-orange text-white border-orange)"
             :class="{ active: selectedEpisodeButtonIndex === index }"
@@ -44,25 +44,30 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import Artplayer from 'artplayer'
 import Hls from 'hls.js'
 import { debounce } from 'throttle-debounce'
 import type { ComponentOption } from 'artplayer/types/component'
+import { useRouter } from 'vue-router/auto'
 import type { VideoDetail } from '@/types'
 import useEpisodeStore from '@/store/useEpisodeStore'
 import { queryVideosDetail } from '@/api'
 import type { SupportedProviderName } from '@/api/types'
 
-const route = useRoute('/play/[provider]/[id]')
-const videoId = route.params.id
-const providerName = route.params.provider as SupportedProviderName
+const route = useRoute('/play/[provider]/[videoId]/[episode]')
+const router = useRouter()
 
+const videoId = route.params.videoId
+const providerName = route.params.provider as SupportedProviderName
+const episodeNum = computed(() => Number.parseInt(route.params.episode))
 const episodeSort = ref<'asc' | 'desc'>('asc')
 const videoDetail = ref<VideoDetail | null>(null)
 const episodes = computed(() => {
-  const list = (videoDetail.value?.vod_play_url.split('#') ?? []).map(parseEpisode)
-  return episodeSort.value === 'asc' ? list : list.reverse()
+  return (videoDetail.value?.vod_play_url.split('#') ?? []).map(parseEpisode)
+})
+const episodesForButton = computed(() => {
+  return episodeSort.value === 'asc' ? episodes.value : episodes.value.toReversed()
 })
 const episodesCount = computed(() => {
   return episodes.value.length
@@ -77,7 +82,6 @@ function parseEpisode(url: string) {
 async function getVideoDetail(id: string) {
   const res = await queryVideosDetail(id, providerName)
   if (res.list && res.list.length > 0) {
-    console.log(res)
     return res.list[0] as VideoDetail
   }
   return null
@@ -101,7 +105,9 @@ function playM3u8(video: HTMLMediaElement, url: string, art: Artplayer) {
     art.notice.show = 'Unsupported playback format: m3u8'
   }
 }
-const selectedEpisodeIndex = ref(0)
+const selectedEpisodeIndex = computed(() => {
+  return episodeNum.value - 1
+})
 const episodeStore = useEpisodeStore()
 const selectedEpisodeButtonIndex = computed(() => {
   return episodeSort.value === 'asc' ? selectedEpisodeIndex.value : episodesCount.value - 1 - selectedEpisodeIndex.value
@@ -190,7 +196,10 @@ onMounted(() => {
   getVideoDetail(videoId).then((detail) => {
     videoDetail.value = detail
     if (episodes.value.length > 0) {
-      handleEpisodeClick(episodes.value[0], 0)
+      if (episodeNum.value > episodes.value.length) {
+        router.push('/404')
+      }
+      playEpisode(episodes.value[selectedEpisodeIndex.value])
     }
   })
 })
@@ -204,21 +213,30 @@ function handleToggleEpisodeSort() {
 }
 
 function handleEpisodeClick(episode: ReturnType<typeof parseEpisode>, index: number) {
-  if (episodeSort.value === 'desc') {
-    selectedEpisodeIndex.value = episodesCount.value - 1 - index
+  let jumpEpisodeNum = index + 1
+  switch (episodeSort.value) {
+    case 'asc':
+      jumpEpisodeNum = index + 1
+      break
+    case 'desc':
+      jumpEpisodeNum = episodesCount.value - index
+      break
   }
-  else {
-    selectedEpisodeIndex.value = index
-  }
-  playEpisode(episode)
-  updateEpisodeControl(index)
+  router.push({
+    name: '/play/[provider]/[videoId]/[episode]',
+    params: {
+      provider: providerName,
+      videoId,
+      episode: jumpEpisodeNum,
+    },
+  })
 }
 
-function updateEpisodeControl(episodeIndex: number) {
+function updateEpisodeControl(episode: ReturnType<typeof parseEpisode>) {
   if (player) {
     const episodeControl: ComponentOption = {
       name: 'episode',
-      html: episodes.value[episodeIndex].episodeName,
+      html: episode.episodeName,
       position: 'right',
     }
     if (player.controls.episode) {
@@ -236,28 +254,47 @@ function playEpisode(episode: ReturnType<typeof parseEpisode>) {
   }
 }
 
+watch(selectedEpisodeIndex, (newVal) => {
+  playEpisode(episodes.value[newVal])
+  updateEpisodeControl(episodes.value[newVal])
+})
+
+function isLastEpisode() {
+  return episodeNum.value === episodesCount.value
+}
+
+function isFirstEpisode() {
+  return episodeNum.value === 1
+}
+
 function playNextEpisode() {
-  console.log('playNextEpisode')
-  if (selectedEpisodeIndex.value < episodesCount.value - 1) {
-    selectedEpisodeIndex.value += 1
-    playEpisode(episodes.value[selectedEpisodeIndex.value])
+  if (!isLastEpisode()) {
+    router.push({
+      name: '/play/[provider]/[videoId]/[episode]',
+      params: {
+        provider: providerName,
+        videoId,
+        episode: episodeNum.value + 1,
+      },
+    })
   }
-  updateEpisodeControl(selectedEpisodeIndex.value)
 }
 
 function playPreviousEpisode() {
-  console.log('playPreviousEpisode')
-  if (selectedEpisodeIndex.value > 0) {
-    selectedEpisodeIndex.value -= 1
-    playEpisode(episodes.value[selectedEpisodeIndex.value])
+  if (!isFirstEpisode()) {
+    router.push({
+      name: '/play/[provider]/[videoId]/[episode]',
+      params: {
+        provider: providerName,
+        videoId,
+        episode: episodeNum.value - 1,
+      },
+    })
   }
-  updateEpisodeControl(selectedEpisodeIndex.value)
 }
 
 function skipEpisodeHeader() {
-  console.log('skipEpisodeHeader')
   if (player) {
-    console.log(episodeStore.headerTimes[videoId])
     player.currentTime = episodeStore.headerTimes[videoId] ?? 0
   }
 }
