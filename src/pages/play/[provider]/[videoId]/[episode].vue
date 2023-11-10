@@ -200,6 +200,7 @@ onMounted(() => {
         router.push('/404')
       }
       playEpisode(episodes.value[selectedEpisodeIndex.value])
+      updateEpisodeControl(episodes.value[selectedEpisodeIndex.value])
     }
   })
 })
