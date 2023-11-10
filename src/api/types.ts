@@ -1,6 +1,6 @@
 import type { ApiResponse, ApiResponseWithClass, VideoBrief, VideoDetail, VideoType } from '@/types'
 
-export type UniversalProviderName = 'hdzyk' | 'xinlang' | 'hongniu' | 'feifan' | 'ikun' | 'shandian' | 'tiankong' | 'liangzi' | 'guangsu'
+export type UniversalProviderName = 'hdzyk' | 'xinlang' | 'hongniu' | 'feifan' | 'ikun' | 'shandian' | 'tiankong' | 'liangzi' | 'guangsu' | 'wolong'
 export type ProviderName = never
 export type SupportedProviderName = UniversalProviderName | ProviderName
 

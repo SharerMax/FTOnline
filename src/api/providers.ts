@@ -67,7 +67,8 @@ const TianKongProvider = generateUniversalProvider('tiankong', ' https://api.tia
 const LiangZiProvier = generateUniversalProvider('liangzi', 'https://cj.lziapi.com/api.php/provide/vod/from/lzm3u8/at/json/', '量子资源')
 // 光速资源 https://www.guangsuzy.com/
 const GuangSuProvider = generateUniversalProvider('guangsu', 'https://api.guangsuapi.com/api.php/provide/vod/from/gsm3u8/', '光速资源')
-
+// 卧龙资源 https://www.wolongzyw.com/
+const WoLongProvider = generateUniversalProvider('wolong', 'https://collect.wolongzy.cc/api.php/provide/vod/at/json/', '卧龙资源')
 const Providers = {
   of(name: SupportedProviderName): Provider {
     switch (name) {
@@ -98,6 +99,9 @@ const Providers = {
       case 'guangsu': {
         return GuangSuProvider
       }
+      case 'wolong': {
+        return WoLongProvider
+      }
     }
   },
   all(): Provider<SupportedProviderName>[] {
@@ -111,11 +115,12 @@ const Providers = {
       TianKongProvider,
       LiangZiProvier,
       GuangSuProvider,
+      WoLongProvider,
     ]
   },
 
   isSupportedName(name: string): name is SupportedProviderName {
-    return name === 'hdzyk' || name === 'xinlang' || name === 'hongniu' || name === 'feifan' || name === 'ikun' || name === 'shandian' || name === 'tiankong' || name === 'lianzi'
+    return name === 'hdzyk' || name === 'xinlang' || name === 'hongniu' || name === 'feifan' || name === 'ikun' || name === 'shandian' || name === 'tiankong' || name === 'lianzi' || name === 'guangsu' || name === 'wolong'
   },
 }
 
