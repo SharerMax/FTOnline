@@ -9,14 +9,14 @@
       <div class="mt-4 flex">
         <div class="bg-orange rounded p-2 flex items-center">
           <button class="  bg-transparent border-none p-0  cursor-pointer  color-white" @click="handleEpisodeHeaderTimeSkipSetClick ">
-            跳过片头 {{ episodeStore.headerTimes[videoId] ?? 0 }}s
+            跳过片头 {{ episodeStore.headerTimes[episodeStoreKey] ?? 0 }}s
           </button>
           <div class="bg-gray-200 h-4 w-px mx-2" />
           <button class="i-lucide-timer-reset p-0 border-none inline-block cursor-pointer color-white" @click="handleEpisodeHeaderTimeSkipResetClick" />
         </div>
         <div class="ml-a bg-orange rounded p-2 flex items-center ">
           <button class="  bg-transparent border-none p-0  cursor-pointer color-white" @click="handleEpisodeTailTimeSkipSetClick ">
-            跳过片尾 {{ episodeStore.tailTimes[videoId] ?? 0 }}s
+            跳过片尾 {{ episodeStore.tailTimes[episodeStoreKey] ?? 0 }}s
           </button>
           <div class="bg-gray-200 h-4 w-px mx-2" />
           <button class="i-lucide-timer-reset p-0 border-none inline-block cursor-pointer color-white" @click="handleEpisodeTailTimeSkipResetClick" />
@@ -51,7 +51,7 @@ import { debounce } from 'throttle-debounce'
 import type { ComponentOption } from 'artplayer/types/component'
 import { onBeforeRouteLeave, useRouter } from 'vue-router/auto'
 import type { VideoDetail } from '@/types'
-import useEpisodeStore from '@/store/useEpisodeStore'
+import useEpisodeStore, { type EpisodeStoreKey, generateStoreKey } from '@/store/useEpisodeStore'
 import { queryVideosDetail } from '@/api'
 import type { SupportedProviderName } from '@/api/types'
 
@@ -60,6 +60,7 @@ const router = useRouter()
 
 const videoId = route.params.videoId
 const providerName = route.params.provider as SupportedProviderName
+const episodeStoreKey = generateStoreKey(providerName, videoId)
 const episodeNum = computed(() => Number.parseInt(route.params.episode))
 const episodeSort = ref<'asc' | 'desc'>('asc')
 const videoDetail = ref<VideoDetail | null>(null)
@@ -187,7 +188,7 @@ onMounted(() => {
     const currentTime = player!.currentTime
     const duration = player!.duration
     const remainTime = duration - currentTime
-    const skipTailTime = episodeStore.tailTimes[videoId] ?? 0
+    const skipTailTime = episodeStore.tailTimes[episodeStoreKey] ?? 0
     if (skipTailTime > 0 && player!.duration > 0 && remainTime <= skipTailTime) {
       // console.log(player!.currentTime, remainTime, skipTailTime)
       playNext()
@@ -302,27 +303,27 @@ function playPreviousEpisode() {
 
 function skipEpisodeHeader() {
   if (player) {
-    player.currentTime = episodeStore.headerTimes[videoId] ?? 0
+    player.currentTime = episodeStore.headerTimes[episodeStoreKey] ?? 0
   }
 }
 
 function handleEpisodeHeaderTimeSkipSetClick() {
-  episodeStore.headerTimes[videoId] = Math.floor(player?.currentTime || 0)
+  episodeStore.headerTimes[episodeStoreKey] = Math.floor(player?.currentTime || 0)
 }
 function handleEpisodeHeaderTimeSkipResetClick() {
-  episodeStore.headerTimes[videoId] = 0
+  episodeStore.headerTimes[episodeStoreKey] = 0
 }
 function handleEpisodeTailTimeSkipSetClick() {
   if (player) {
     const remainTime = player.duration - player.currentTime
-    episodeStore.tailTimes[videoId] = Math.floor(remainTime)
+    episodeStore.tailTimes[episodeStoreKey] = Math.floor(remainTime)
   }
   else {
-    episodeStore.tailTimes[videoId] = 0
+    episodeStore.tailTimes[episodeStoreKey] = 0
   }
 }
 function handleEpisodeTailTimeSkipResetClick() {
-  episodeStore.tailTimes[videoId] = 0
+  episodeStore.tailTimes[episodeStoreKey] = 0
 }
 </script>
 
