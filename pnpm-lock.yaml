@@ -41,8 +41,8 @@ devDependencies:
     specifier: ^0.43.1
     version: 0.43.1(@typescript-eslint/parser@6.10.0)(eslint@8.53.0)(typescript@5.2.2)
   '@iconify/json':
-    specifier: ^2.2.140
-    version: 2.2.140
+    specifier: ^2.2.141
+    version: 2.2.141
   '@iconify/utils':
     specifier: ^2.1.11
     version: 2.1.11
@@ -133,7 +133,7 @@ packages:
       eslint-plugin-jsdoc: 46.9.0(eslint@8.53.0)
       eslint-plugin-jsonc: 2.10.0(eslint@8.53.0)
       eslint-plugin-markdown: 3.0.1(eslint@8.53.0)
-      eslint-plugin-n: 16.3.0(eslint@8.53.0)
+      eslint-plugin-n: 16.3.1(eslint@8.53.0)
       eslint-plugin-no-only-tests: 3.1.0
       eslint-plugin-promise: 6.1.1(eslint@8.53.0)
       eslint-plugin-unicorn: 48.0.1(eslint@8.53.0)
@@ -505,8 +505,8 @@ packages:
     resolution: {integrity: sha512-dvuCeX5fC9dXgJn9t+X5atfmgQAzUOWqS1254Gh0m6i8wKd10ebXkfNKiRK+1GWi/yTvvLDHpoxLr0xxxeslWw==}
     dev: true
 
-  /@iconify/json@2.2.140:
-    resolution: {integrity: sha512-pEDLyUe39vZy15C0LT3UrnTzAWq1xkZ+F8+u9XfcHzqC7W9IwsocVMzWBGtXUn+pCmLpksfwHlzVycbbz7eMvw==}
+  /@iconify/json@2.2.141:
+    resolution: {integrity: sha512-EmHsjVngGE7K9ykKkkGczXTW5552h/dDp7SicHT3SaQD1Krb/GvIVCff9jRgBDFu9QxhcqVdVk+kDHfbzJXT8Q==}
     dependencies:
       '@iconify/types': 2.0.0
       pathe: 1.1.1
@@ -1423,7 +1423,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001561
-      electron-to-chromium: 1.4.580
+      electron-to-chromium: 1.4.581
       node-releases: 2.0.13
       update-browserslist-db: 1.0.13(browserslist@4.22.1)
     dev: true
@@ -1752,8 +1752,8 @@ packages:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
     dev: true
 
-  /electron-to-chromium@1.4.580:
-    resolution: {integrity: sha512-T5q3pjQon853xxxHUq3ZP68ZpvJHuSMY2+BZaW3QzjS4HvNuvsMmZ/+lU+nCrftre1jFZ+OSlExynXWBihnXzw==}
+  /electron-to-chromium@1.4.581:
+    resolution: {integrity: sha512-6uhqWBIapTJUxgPTCHH9sqdbxIMPt7oXl0VcAL1kOtlU6aECdcMncCrX5Z7sHQ/invtrC9jUQUef7+HhO8vVFw==}
     dev: true
 
   /entities@4.5.0:
@@ -1991,8 +1991,8 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-plugin-n@16.3.0(eslint@8.53.0):
-    resolution: {integrity: sha512-/XZLH5CUXGK3laz3xYFNza8ZxLCq8ZNW6MsVw5z3d5hc2AwZzi0fPiySFZHQTdVDOHGs2cGv91aqzWmgBdq2gQ==}
+  /eslint-plugin-n@16.3.1(eslint@8.53.0):
+    resolution: {integrity: sha512-w46eDIkxQ2FaTHcey7G40eD+FhTXOdKudDXPUO2n9WNcslze/i/HT2qJ3GXjHngYSGDISIgPNhwGtgoix4zeOw==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       eslint: '>=7.0.0'
@@ -2003,6 +2003,7 @@ packages:
       eslint-plugin-es-x: 7.3.0(eslint@8.53.0)
       get-tsconfig: 4.7.2
       ignore: 5.2.4
+      is-builtin-module: 3.2.1
       is-core-module: 2.13.1
       minimatch: 3.1.2
       resolve: 1.22.8
@@ -2273,7 +2274,7 @@ packages:
     resolution: {integrity: sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==}
     engines: {node: ^10.12.0 || >=12.0.0}
     dependencies:
-      flat-cache: 3.1.1
+      flat-cache: 3.2.0
     dev: true
 
   /fill-range@7.0.1:
@@ -2299,9 +2300,9 @@ packages:
       path-exists: 4.0.0
     dev: true
 
-  /flat-cache@3.1.1:
-    resolution: {integrity: sha512-/qM2b3LUIaIgviBQovTLvijfyOQXPtSRnRK26ksj2J7rzPIecePUIpJsZ4T02Qg+xiAEKIs5K8dsHEd+VaKa/Q==}
-    engines: {node: '>=12.0.0'}
+  /flat-cache@3.2.0:
+    resolution: {integrity: sha512-CYcENa+FtcUKLmhhqyctpclsq7QF38pKjZHsGNiSQF5r4FtoKDWabFDl3hzaEQMvT1LHEysw5twgLvpYYb4vbw==}
+    engines: {node: ^10.12.0 || >=12.0.0}
     dependencies:
       flatted: 3.2.9
       keyv: 4.5.4

@@ -51,7 +51,7 @@ import { debounce } from 'throttle-debounce'
 import type { ComponentOption } from 'artplayer/types/component'
 import { onBeforeRouteLeave, useRouter } from 'vue-router/auto'
 import type { VideoDetail } from '@/types'
-import useEpisodeStore, { type EpisodeStoreKey, generateStoreKey } from '@/store/useEpisodeStore'
+import useEpisodeStore, { generateStoreKey } from '@/store/useEpisodeStore'
 import { queryVideosDetail } from '@/api'
 import type { SupportedProviderName } from '@/api/types'
 
