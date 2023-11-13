@@ -60,7 +60,7 @@ const FeiFanProvider = generateUniversalProvider('feifan', 'https://cj.ffzyapi.c
 // iKun 资源 https://ikunzy.com/
 const IKunProvider = generateUniversalProvider('ikun', 'https://ikunzyapi.com/api.php/provide/vod/from/ikm3u8/at/json', 'iKun 资源')
 // 闪电资源 https://shandianzy.com/
-const ShandianProvider = generateUniversalProvider('shandian', 'https://sdzyapi.com/api.php/provide/vod/from/sdm3u8/at/json/', '闪电资源')
+const ShanDianProvider = generateUniversalProvider('shandian', 'https://sdzyapi.com/api.php/provide/vod/from/sdm3u8/at/json/', '闪电资源')
 // 天空资源 https://help.tiankongapi.com/
 const TianKongProvider = generateUniversalProvider('tiankong', ' https://api.tiankongapi.com/api.php/provide/vod/from/tkm3u8/at/json/', '天空资源')
 // 量子资源 http://lzizy.net/
@@ -88,7 +88,7 @@ const Providers = {
         return IKunProvider
       }
       case 'shandian': {
-        return ShandianProvider
+        return ShanDianProvider
       }
       case 'tiankong': {
         return TianKongProvider
@@ -111,7 +111,7 @@ const Providers = {
       HongNiuProvider,
       FeiFanProvider,
       IKunProvider,
-      ShandianProvider,
+      ShanDianProvider,
       TianKongProvider,
       LiangZiProvier,
       GuangSuProvider,
