@@ -14,7 +14,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@antfu/eslint-config": "^2.1.0",
     "@unhead/vue": "^1.8.8",
     "@unocss/reset": "^0.57.7",
     "artplayer": "^5.0.9",
@@ -27,6 +26,7 @@
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^2.1.0",
     "@iconify/json": "^2.2.146",
     "@iconify/utils": "^2.1.12",
     "@tsconfig/node20": "^20.1.2",
