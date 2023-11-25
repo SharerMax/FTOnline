@@ -1,2 +1,2 @@
-/// <reference types="vite-plugin-vue-layouts/client.d.ts" />
+/// <reference types="vite-plugin-vue-meta-layouts/client" />
 /// <reference types="vite-svg-loader" />

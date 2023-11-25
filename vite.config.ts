@@ -7,13 +7,12 @@ import Unocss from 'unocss/vite'
 import VueRouter from 'unplugin-vue-router/vite'
 import svgLoader from 'vite-svg-loader'
 
-// @ts-expect-error types file not declare in `exports` field
-import Layouts from 'vite-plugin-vue-layouts'
+import MetaLayouts from 'vite-plugin-vue-meta-layouts'
 import Inspect from 'vite-plugin-inspect'
 import { browserslistToTargets } from 'lightningcss'
 import browserslist from 'browserslist'
 
-console.log(browserslist())
+// console.log(browserslist())
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -26,7 +25,7 @@ export default defineConfig({
     // Pages({
     //   resolver: 'vue',
     // }),
-    Layouts(),
+    MetaLayouts(),
     Inspect(),
   ],
   css: {
@@ -38,6 +37,11 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.join(__dirname, 'src'),
+    },
+  },
+  server: {
+    warmup: {
+      clientFiles: ['./src/components/**/*.vue', './src/layouts/**/*.vue', './src/styles/**/*.css'],
     },
   },
   build: {

@@ -1,4 +1,4 @@
-import { setupLayouts } from 'virtual:generated-layouts'
+import { setupLayouts } from 'virtual:meta-layouts'
 import { createRouter, createWebHistory } from 'vue-router/auto'
 
 export default createRouter({
