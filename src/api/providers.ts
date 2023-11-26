@@ -2,8 +2,11 @@ import axios from 'axios'
 import type { Provider, SupportedProviderName, UniversalProviderName } from './types'
 import type { ApiResponse, ApiResponseWithClass, VideoBrief, VideoDetail, VideoType } from '@/types'
 
+const baseURLWithHttps = import.meta.env.VITE_PROVIDER_PROXY_API_URL
+const baseURLWithHttp = import.meta.env.VITE_PROVIDER_PROXY_API_URL.replace('https', 'http')
+const baseURL = window.location.protocol.toLowerCase() === 'http' ? baseURLWithHttp : baseURLWithHttps
 const corsProxyClient = axios.create({
-  baseURL: import.meta.env.VITE_PROVIDER_PROXY_API_URL,
+  baseURL,
 })
 
 class UniversalProvider<T extends UniversalProviderName> implements Provider<T> {
