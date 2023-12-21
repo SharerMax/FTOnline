@@ -8,6 +8,7 @@
     "pnpm": "^8.0.0"
   },
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "prepare": "is-ci || husky install",
     "dev": "vue-tsc --noEmit && vite",
     "build": "vite build",
