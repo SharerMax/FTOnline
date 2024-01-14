@@ -10,6 +10,7 @@ import svgLoader from 'vite-svg-loader'
 import MetaLayouts from 'vite-plugin-vue-meta-layouts'
 import Inspect from 'vite-plugin-inspect'
 import { browserslistToTargets } from 'lightningcss'
+import browserslistToEsbuild from 'browserslist-to-esbuild'
 import browserslist from 'browserslist'
 
 // console.log(browserslist())
@@ -45,7 +46,7 @@ export default defineConfig({
     },
   },
   build: {
-    target: browserslist(),
+    target: browserslistToEsbuild(),
     rollupOptions: {
       output: {
         assetFileNames: (assetInfo) => {
