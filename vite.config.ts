@@ -2,24 +2,30 @@ import * as path from 'node:path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import Unocss from 'unocss/vite'
-import Pages from 'vite-plugin-pages'
 
-// @ts-expect-error types file not declare in `exports` field
-import Layouts from 'vite-plugin-vue-layouts'
+// import Pages from 'vite-plugin-pages'
+import VueRouter from 'unplugin-vue-router/vite'
+import svgLoader from 'vite-svg-loader'
+
+import MetaLayouts from 'vite-plugin-vue-meta-layouts'
 import Inspect from 'vite-plugin-inspect'
 import { browserslistToTargets } from 'lightningcss'
 import browserslist from 'browserslist'
 
-console.log(browserslist())
+// console.log(browserslist())
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    vue(),
-    Unocss(),
-    Pages({
-      resolver: 'vue',
+    VueRouter({
+      dts: 'src/vite-plugin-vue-router.d.ts',
     }),
-    Layouts(),
+    vue(),
+    svgLoader(),
+    Unocss(),
+    // Pages({
+    //   resolver: 'vue',
+    // }),
+    MetaLayouts(),
     Inspect(),
   ],
   css: {
@@ -31,6 +37,11 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.join(__dirname, 'src'),
+    },
+  },
+  server: {
+    warmup: {
+      clientFiles: ['./src/components/**/*.vue', './src/layouts/**/*.vue', './src/styles/**/*.css'],
     },
   },
   build: {

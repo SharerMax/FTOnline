@@ -1,11 +1,8 @@
 /// <reference types="vite/client" />
-/// <reference types="vite-plugin-pages/client" />
-/// <reference types="vite-plugin-vue-layouts/client.d.ts" />
-export {}
-
-import 'vue-router'
-declare module 'vue-router' {
-  interface RouteMeta {
-    title?: string
-  }
+interface ImportMetaEnv {
+  readonly VITE_PROVIDER_PROXY_API_URL: string
+  // more env variables...
+}
+interface ImportMeta {
+  readonly env: ImportMetaEnv
 }
