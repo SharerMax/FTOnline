@@ -1,0 +1,25 @@
+.artplayer-plugin-playlist-layer {
+  height: 100%;
+  overflow-y: scroll;
+}
+.artplayer-plugin-playlist-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
+
+.artplayer-plugin-playlist-item {
+  cursor: pointer;
+  line-height: 28px;
+  text-align: center;
+  &:hover {
+    color: orange;
+  }
+  &[selected] {
+    color: orange;
+  }
+}
+.artplayer-plugin-playlist-item[selected] {
+  color: orange;
+}

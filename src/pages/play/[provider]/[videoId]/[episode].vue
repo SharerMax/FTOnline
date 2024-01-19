@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import Artplayer from 'artplayer'
 import Hls from 'hls.js'
 import { debounce } from 'throttle-debounce'
@@ -54,6 +54,7 @@ import type { VideoDetail } from '@/types'
 import useEpisodeStore, { generateStoreKey } from '@/store/useEpisodeStore'
 import { queryVideosDetail } from '@/api'
 import type { SupportedProviderName } from '@/api/types'
+import artplayerPlayListPlugin, { type ArtplayerPlayListPlugin } from '@/utils/artplayerPlaylistPlugin'
 
 const route = useRoute('/play/[provider]/[videoId]/[episode]')
 const router = useRouter()
@@ -161,19 +162,21 @@ onMounted(() => {
       //   tooltip: '剧集',
       // },
     ],
+    plugins: [
+      artplayerPlayListPlugin({
+        playList: [],
+        index: 0,
+        onSwitch() {
+          skipEpisodeHeader()
+        },
+      }),
+    ],
   })
   player.on('video:ended', () => {
     playNextEpisode()
   })
-  // player.on('video:loadedmetadata', () => {
-  //   console.log('video:loadedmetadata')
-  // })
-  player.on('ready', () => {
-    nextTick(() => {
-      skipEpisodeHeader()
-    })
-  })
-  player.on('restart', () => {
+
+  player.once('ready', () => {
     skipEpisodeHeader()
   })
   const playNext = debounce(3000, () => {
@@ -199,7 +202,18 @@ onMounted(() => {
     if (episodes.value.length > 0) {
       if (episodeNum.value > episodes.value.length) {
         router.push('/404')
+        return
       }
+      const playListPlugin = player?.plugins.playlist as ArtplayerPlayListPlugin
+      playListPlugin.update({
+        playList: episodes.value.map((episode) => {
+          return {
+            title: episode.episodeName,
+            url: episode.videoUrl,
+          }
+        }),
+        index: 0,
+      })
       playEpisode(episodes.value[selectedEpisodeIndex.value])
       updateEpisodeControl(episodes.value[selectedEpisodeIndex.value])
     }
@@ -236,15 +250,22 @@ function handleEpisodeClick(episode: ReturnType<typeof parseEpisode>, index: num
 
 function updateEpisodeControl(episode: ReturnType<typeof parseEpisode>) {
   if (player) {
-    const episodeControl: ComponentOption = {
-      name: 'episode',
-      html: episode.episodeName,
-      position: 'right',
-    }
     if (player.controls.episode) {
-      player.controls.update(episodeControl)
+      player.controls.update({
+        name: 'episode',
+        html: episode.episodeName,
+      })
     }
     else {
+      const episodeControl: ComponentOption = {
+        name: 'episode',
+        html: episode.episodeName,
+        position: 'right',
+        tooltip: '选择剧集',
+        click() {
+          (player?.plugins.playlist as ArtplayerPlayListPlugin | undefined)?.toggle()
+        },
+      }
       player.controls.add(episodeControl)
     }
   }
@@ -252,7 +273,7 @@ function updateEpisodeControl(episode: ReturnType<typeof parseEpisode>) {
 
 function playEpisode(episode: ReturnType<typeof parseEpisode>) {
   if (player) {
-    player.switch = episode.videoUrl
+    player.switchUrl(episode.videoUrl).then(skipEpisodeHeader)
   }
 }
 
