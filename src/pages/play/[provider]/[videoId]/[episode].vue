@@ -53,15 +53,15 @@ import { onBeforeRouteLeave, useRouter } from 'vue-router/auto'
 import type { VideoDetail } from '@/types'
 import useEpisodeStore, { generateStoreKey } from '@/store/useEpisodeStore'
 import { queryVideosDetail } from '@/api'
-import type { SupportedProviderName } from '@/api/types'
+import type { SupportedProviderKey } from '@/api/types'
 import artplayerPlaylistPlugin, { type ArtplayerPlaylistPlugin } from '@/utils/artplayerPlaylistPlugin'
 
 const route = useRoute('/play/[provider]/[videoId]/[episode]')
 const router = useRouter()
 
 const videoId = route.params.videoId
-const providerName = route.params.provider as SupportedProviderName
-const episodeStoreKey = generateStoreKey(providerName, videoId)
+const providerKey = route.params.provider as SupportedProviderKey
+const episodeStoreKey = generateStoreKey(providerKey, videoId)
 const episodeNum = computed(() => Number.parseInt(route.params.episode))
 const episodeSort = ref<'asc' | 'desc'>('asc')
 const videoDetail = ref<VideoDetail | null>(null)
@@ -82,7 +82,7 @@ function parseEpisode(url: string) {
   }
 }
 async function getVideoDetail(id: string) {
-  const res = await queryVideosDetail(id, providerName)
+  const res = await queryVideosDetail(id, providerKey)
   if (res.list && res.list.length > 0) {
     return res.list[0] as VideoDetail
   }
@@ -246,7 +246,7 @@ function handleEpisodeClick(episode: ReturnType<typeof parseEpisode>, index: num
   router.push({
     name: '/play/[provider]/[videoId]/[episode]',
     params: {
-      provider: providerName,
+      provider: providerKey,
       videoId,
       episode: jumpEpisodeNum,
     },
@@ -308,7 +308,7 @@ function playNextEpisode() {
     router.push({
       name: '/play/[provider]/[videoId]/[episode]',
       params: {
-        provider: providerName,
+        provider: providerKey,
         videoId,
         episode: episodeNum.value + 1,
       },
@@ -328,7 +328,7 @@ function playPreviousEpisode() {
     router.push({
       name: '/play/[provider]/[videoId]/[episode]',
       params: {
-        provider: providerName,
+        provider: providerKey,
         videoId,
         episode: episodeNum.value - 1,
       },

@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
 import { reactive } from 'vue'
-import type { SupportedProviderName } from '@/api/types'
+import type { SupportedProviderKey } from '@/api/types'
 
-export type EpisodeStoreKey = `${SupportedProviderName}-${string}`
+export type EpisodeStoreKey = `${SupportedProviderKey}-${string}`
 /* #__NO_SIDE_EFFECTS__ */
-export function generateStoreKey(providerName: SupportedProviderName, videoId: string): EpisodeStoreKey {
-  return `${providerName}-${videoId}`
+export function generateStoreKey(providerKey: SupportedProviderKey, videoId: string): EpisodeStoreKey {
+  return `${providerKey}-${videoId}`
 }
 
 export default defineStore('episode', () => {

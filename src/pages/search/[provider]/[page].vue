@@ -11,9 +11,9 @@
           class="outline-none leading-8 flex-1 px-2  color-orange border-none dark:(bg-dark-800)"
           @keyup.enter="handleSearchClick"
         >
-        <select :value="providerName" class="bg-transparent color-orange border-none outline-none px-2" @change="handleProviderNameChange">
-          <option v-for="(provider, index) in allProviders" :key="index" :value="provider.name">
-            {{ provider.nickName }}
+        <select :value="providerKey" class="bg-transparent color-orange border-none outline-none px-2" @change="handleProviderChange">
+          <option v-for="(provider, index) in allProviders" :key="index" :value="provider.key">
+            {{ provider.name }}
           </option>
         </select>
         <select v-model="videoType" class="bg-transparent color-orange border-none outline-none px-2">
@@ -75,7 +75,7 @@ import MediaItem from '@/components/MediaItem.vue'
 import Pagination from '@/components/Pagination.vue'
 import type { VideoDetail, VideoType } from '@/types'
 import { queryVideoList, queryVideoTypes } from '@/api'
-import type { SupportedProviderName } from '@/api/types'
+import type { SupportedProviderKey } from '@/api/types'
 import Providers from '@/api/providers'
 
 const route = useRoute('/search/[provider]/[page]')
@@ -83,7 +83,7 @@ const keyWord = (route.query.kw || '') as string
 const videoType = ref((route.query.type || '') as string)
 const videoTypes = ref<VideoType[]>([])
 const page = route.params.page
-const providerName = ref(route.params.provider as SupportedProviderName)
+const providerKey = ref(route.params.provider as SupportedProviderKey)
 const allProviders = Providers.all()
 const input = ref(keyWord || '')
 const videoList = ref<VideoDetail[]>([])
@@ -95,10 +95,10 @@ const pagination = reactive({
 const router = useRouter()
 
 onMounted(() => {
-  updateVideoTypes(providerName.value)
+  updateVideoTypes(providerKey.value)
 })
-function updateVideoTypes(name: SupportedProviderName) {
-  queryVideoTypes(name).then((res) => {
+function updateVideoTypes(providerKey: SupportedProviderKey) {
+  queryVideoTypes(providerKey).then((res) => {
     videoTypes.value = res
   })
 }
@@ -106,7 +106,7 @@ function updateVideoTypes(name: SupportedProviderName) {
 const loading = ref(false)
 function searchVideoList(keyword: string, videoType: string = '', page = 1) {
   loading.value = true
-  queryVideoList(keyword, page, videoType, providerName.value).then((res) => {
+  queryVideoList(keyword, page, videoType, providerKey.value).then((res) => {
     pagination.total = res.total
     pagination.page = +res.page
     pagination.size = +res.limit
@@ -118,7 +118,7 @@ function updatePage(page: number) {
   const routeLocationRaw: RouteLocationRaw<'/search/[provider]/[page]'> = {
     name: '/search/[provider]/[page]',
     params: {
-      provider: providerName.value,
+      provider: providerKey.value,
       page: `${page}`,
     },
     query: {
@@ -147,15 +147,15 @@ onMounted(() => {
   searchVideoList(keyWord || '', videoType.value, pagination.page)
 })
 
-function handleProviderNameChange(event: Event) {
+function handleProviderChange(event: Event) {
   if (event.currentTarget instanceof HTMLSelectElement) {
-    const name = event.currentTarget.value as SupportedProviderName
-    if (providerName.value === name) {
+    const key = event.currentTarget.value as SupportedProviderKey
+    if (providerKey.value === key) {
       return
     }
-    providerName.value = name
+    providerKey.value = key
     videoType.value = ''
-    updateVideoTypes(name)
+    updateVideoTypes(key)
   }
 }
 
@@ -163,7 +163,7 @@ function handlePlayClick(videoId: string) {
   router.push({
     name: '/play/[provider]/[videoId]/[episode]',
     params: {
-      provider: providerName.value,
+      provider: providerKey.value,
       videoId,
       episode: 1,
     },

@@ -25,9 +25,9 @@
           placeholder="想看啥？"
           @keyup.enter="handleSearchClick"
         >
-        <select :value="providerName" class="bg-transparent color-orange border-none outline-none px-2" @input="handleProviderChange($event)">
-          <option v-for="(provider, index) in allProviders" :key="index" :value="provider.name">
-            {{ provider.nickName }}
+        <select :value="providerKey" class="bg-transparent color-orange border-none outline-none px-2" @input="handleProviderChange($event)">
+          <option v-for="(provider, index) in allProviders" :key="index" :value="provider.key">
+            {{ provider.name }}
           </option>
         </select>
         <button class="i-carbon:search h-4 w-4 border-none px-5 cursor-pointer color-orange flex-none" @click="handleSearchClick" />
@@ -49,21 +49,22 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router/auto'
-import type { SupportedProviderName } from '@/api/types'
+import type { SupportedProviderKey } from '@/api/types'
 import { queryVideoTypes } from '@/api'
 import type { VideoType } from '@/types'
 import Providers from '@/api/providers'
 
 const input = ref('')
 const router = useRouter()
-const providerName = ref<SupportedProviderName>('hdzyk')
 const videoTypes = ref<VideoType[]>([])
 const allProviders = Providers.all()
+const providerKey = ref<SupportedProviderKey>(allProviders[0].key)
+
 function handleSearchClick() {
   router.push({
     name: '/search/[provider]/[page]',
     params: {
-      provider: providerName.value,
+      provider: providerKey.value,
       page: 1,
     },
     query: {
@@ -75,7 +76,7 @@ function handleTypeClick(type: VideoType) {
   router.push({
     name: '/search/[provider]/[page]',
     params: {
-      provider: providerName.value,
+      provider: providerKey.value,
       page: 1,
     },
     query: {
@@ -85,20 +86,20 @@ function handleTypeClick(type: VideoType) {
   })
 }
 onMounted(() => {
-  updateVideoTypes(providerName.value)
+  updateVideoTypes(providerKey.value)
 })
-function updateVideoTypes(name: SupportedProviderName) {
+function updateVideoTypes(name: SupportedProviderKey) {
   queryVideoTypes(name).then((res) => {
     videoTypes.value = res
   })
 }
 function handleProviderChange(event: Event) {
   if (event.currentTarget instanceof HTMLSelectElement) {
-    const name = event.currentTarget.value as SupportedProviderName
-    if (providerName.value === name) {
+    const name = event.currentTarget.value as SupportedProviderKey
+    if (providerKey.value === name) {
       return
     }
-    providerName.value = name
+    providerKey.value = name
     updateVideoTypes(name)
   }
 }
