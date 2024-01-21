@@ -13,7 +13,7 @@ interface Option {
   onSwitch?: (url: string, index: number) => void
 }
 
-export interface ArtplayerPlayListPlugin {
+export interface ArtplayerPlaylistPlugin {
   show: () => void
   hide: () => void
   toggle: () => void
@@ -29,7 +29,7 @@ function generateItemListHtml(option: Option): string {
   }).join('')
   return `<ul class="artplayer-plugin-playlist-list">${itemsHtml}</ul>`
 }
-function artplayerPlayListPlugin(option: Option): (this: Artplayer, art: Artplayer) => ArtplayerPlayListPlugin {
+function artplayerPlaylistPlugin(option: Option): (this: Artplayer, art: Artplayer) => ArtplayerPlaylistPlugin {
   return function (artPlayer) {
     artPlayer.layers.add({
       name: 'playlist',
@@ -79,7 +79,7 @@ function artplayerPlayListPlugin(option: Option): (this: Artplayer, art: Artplay
       if (option.index === index) {
         return
       }
-      const items = artPlayer.layers.playList.querySelectorAll('.artplayer-plugin-playlist-item') as NodeListOf<HTMLElement>
+      const items = artPlayer.layers.playlist.querySelectorAll('.artplayer-plugin-playlist-item') as NodeListOf<HTMLElement>
       items[option.index]?.removeAttribute('selected')
       items[index]?.setAttribute('selected', '')
       option.index = index
@@ -104,4 +104,4 @@ function artplayerPlayListPlugin(option: Option): (this: Artplayer, art: Artplay
   }
 }
 
-export default artplayerPlayListPlugin
+export default artplayerPlaylistPlugin

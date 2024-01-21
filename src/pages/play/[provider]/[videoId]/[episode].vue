@@ -54,7 +54,7 @@ import type { VideoDetail } from '@/types'
 import useEpisodeStore, { generateStoreKey } from '@/store/useEpisodeStore'
 import { queryVideosDetail } from '@/api'
 import type { SupportedProviderName } from '@/api/types'
-import artplayerPlayListPlugin, { type ArtplayerPlayListPlugin } from '@/utils/artplayerPlaylistPlugin'
+import artplayerPlaylistPlugin, { type ArtplayerPlaylistPlugin } from '@/utils/artplayerPlaylistPlugin'
 
 const route = useRoute('/play/[provider]/[videoId]/[episode]')
 const router = useRouter()
@@ -163,7 +163,7 @@ onMounted(() => {
       // },
     ],
     plugins: [
-      artplayerPlayListPlugin({
+      artplayerPlaylistPlugin({
         playList: [],
         index: 0,
         onSwitch() {
@@ -204,7 +204,7 @@ onMounted(() => {
         router.push('/404')
         return
       }
-      const playListPlugin = player?.plugins.playlist as ArtplayerPlayListPlugin
+      const playListPlugin = player?.plugins.playlist as ArtplayerPlaylistPlugin
       playListPlugin.update({
         playList: episodes.value.map((episode) => {
           return {
@@ -212,7 +212,7 @@ onMounted(() => {
             url: episode.videoUrl,
           }
         }),
-        index: 0,
+        index: selectedEpisodeIndex.value,
       })
       playEpisode(episodes.value[selectedEpisodeIndex.value])
       updateEpisodeControl(episodes.value[selectedEpisodeIndex.value])
@@ -226,6 +226,11 @@ onBeforeUnmount(() => {
 
 function handleToggleEpisodeSort() {
   episodeSort.value = episodeSort.value === 'asc' ? 'desc' : 'asc'
+}
+
+function updatePlaylistSelect(episodeIndex: number) {
+  const playListPlugin = player?.plugins.playlist as ArtplayerPlaylistPlugin
+  playListPlugin.select(episodeIndex)
 }
 
 function handleEpisodeClick(episode: ReturnType<typeof parseEpisode>, index: number) {
@@ -245,6 +250,8 @@ function handleEpisodeClick(episode: ReturnType<typeof parseEpisode>, index: num
       videoId,
       episode: jumpEpisodeNum,
     },
+  }).then(() => {
+    updatePlaylistSelect(selectedEpisodeIndex.value)
   })
 }
 
@@ -263,7 +270,7 @@ function updateEpisodeControl(episode: ReturnType<typeof parseEpisode>) {
         position: 'right',
         tooltip: '选择剧集',
         click() {
-          (player?.plugins.playlist as ArtplayerPlayListPlugin | undefined)?.toggle()
+          (player?.plugins.playlist as ArtplayerPlaylistPlugin | undefined)?.toggle()
         },
       }
       player.controls.add(episodeControl)
@@ -305,7 +312,14 @@ function playNextEpisode() {
         videoId,
         episode: episodeNum.value + 1,
       },
+    }).then(() => {
+      updatePlaylistSelect(selectedEpisodeIndex.value)
     })
+  }
+  else {
+    if (player) {
+      player.notice.show = '已经是最后一集了'
+    }
   }
 }
 
@@ -318,7 +332,14 @@ function playPreviousEpisode() {
         videoId,
         episode: episodeNum.value - 1,
       },
+    }).then(() => {
+      updatePlaylistSelect(selectedEpisodeIndex.value)
     })
+  }
+  else {
+    if (player) {
+      player.notice.show = '已经是第一集了'
+    }
   }
 }
 
