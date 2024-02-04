@@ -19,6 +19,11 @@ export default defineConfig({
   plugins: [
     VueRouter({
       dts: 'src/vite-plugin-vue-router.d.ts',
+      // list of glob files to exclude from the routes generation
+      // e.g. ['**/__*'] will exclude all files and folders starting with `__`
+      // e.g. ['**/__*/**/*'] will exclude all files within folders starting with `__`
+      // e.g. ['**/*.component.vue'] will exclude components ending with `.component.vue`
+      exclude: ['**/*.component.vue'],
     }),
     vue(),
     svgLoader(),
