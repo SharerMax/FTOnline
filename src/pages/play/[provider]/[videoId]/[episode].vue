@@ -74,7 +74,13 @@ const episodesForButton = computed(() => {
 const episodesCount = computed(() => {
   return episodes.value.length
 })
-function parseEpisode(url: string) {
+
+interface Episode {
+  episodeName: string
+  videoUrl: string
+}
+
+function parseEpisode(url: string): Episode {
   const [episodeName, videoUrl] = url.split('$')
   return {
     episodeName,
@@ -163,11 +169,13 @@ onMounted(() => {
       // },
     ],
     plugins: [
-      artplayerPlaylistPlugin({
+      artplayerPlaylistPlugin<Episode>({
         playList: [],
         index: 0,
-        onSwitch() {
-          skipEpisodeHeader()
+        onClick(index, _url, episode) {
+          if (episode) {
+            handleEpisodeClick(episode, index)
+          }
         },
       }),
     ],
@@ -204,12 +212,13 @@ onMounted(() => {
         router.push('/404')
         return
       }
-      const playListPlugin = player?.plugins.playlist as ArtplayerPlaylistPlugin
+      const playListPlugin = player?.plugins.playlist as ArtplayerPlaylistPlugin<Episode>
       playListPlugin.update({
         playList: episodes.value.map((episode) => {
           return {
             title: episode.episodeName,
             url: episode.videoUrl,
+            data: episode,
           }
         }),
         index: selectedEpisodeIndex.value,
@@ -229,11 +238,11 @@ function handleToggleEpisodeSort() {
 }
 
 function updatePlaylistSelect(episodeIndex: number) {
-  const playListPlugin = player?.plugins.playlist as ArtplayerPlaylistPlugin
+  const playListPlugin = player?.plugins.playlist as ArtplayerPlaylistPlugin<Episode>
   playListPlugin.select(episodeIndex)
 }
 
-function handleEpisodeClick(episode: ReturnType<typeof parseEpisode>, index: number) {
+function handleEpisodeClick(episode: Episode, index: number) {
   let jumpEpisodeNum = index + 1
   switch (episodeSort.value) {
     case 'asc':
@@ -255,7 +264,7 @@ function handleEpisodeClick(episode: ReturnType<typeof parseEpisode>, index: num
   })
 }
 
-function updateEpisodeControl(episode: ReturnType<typeof parseEpisode>) {
+function updateEpisodeControl(episode: Episode) {
   if (player) {
     if (player.controls.episode) {
       player.controls.update({
@@ -270,7 +279,7 @@ function updateEpisodeControl(episode: ReturnType<typeof parseEpisode>) {
         position: 'right',
         tooltip: '选择剧集',
         click() {
-          (player?.plugins.playlist as ArtplayerPlaylistPlugin | undefined)?.toggle()
+          (player?.plugins.playlist as ArtplayerPlaylistPlugin<Episode> | undefined)?.toggle()
         },
       }
       player.controls.add(episodeControl)
@@ -278,7 +287,7 @@ function updateEpisodeControl(episode: ReturnType<typeof parseEpisode>) {
   }
 }
 
-function playEpisode(episode: ReturnType<typeof parseEpisode>) {
+function playEpisode(episode: Episode) {
   if (player) {
     player.switchUrl(episode.videoUrl).then(skipEpisodeHeader)
   }

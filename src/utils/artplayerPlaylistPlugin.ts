@@ -1,35 +1,37 @@
 import type Artplayer from 'artplayer'
 import '@/style/artplayerPlayListPlugin.css'
 
-interface ListItem {
+interface ListItem<T> {
   title: string
   url: string
+  data?: T
 }
 
-interface Option {
-  playList: ListItem[]
+interface Option<T> {
+  playList: ListItem<T>[]
   index: number
-  onSelect?: (index: number) => void
+  autoSwitch?: boolean
+  onClick?: (index: number, url: string, data?: T) => void
   onSwitch?: (url: string, index: number) => void
 }
 
-export interface ArtplayerPlaylistPlugin {
+export interface ArtplayerPlaylistPlugin<T> {
   show: () => void
   hide: () => void
   toggle: () => void
   select: (index: number) => void
-  update: (option: Option) => void
+  update: (option: Option<T>) => void
 
   name: string
 }
 
-function generateItemListHtml(option: Option): string {
+function generateItemListHtml<T>(option: Option<T>): string {
   const itemsHtml = option.playList.map((item, index) => {
     return `<li class="artplayer-plugin-playlist-item" data-url="${item.url}" data-index="${index}" ${index === option.index ? 'selected' : ''}>${item.title}</li>`
   }).join('')
   return `<ul class="artplayer-plugin-playlist-list">${itemsHtml}</ul>`
 }
-function artplayerPlaylistPlugin(option: Option): (this: Artplayer, art: Artplayer) => ArtplayerPlaylistPlugin {
+function artplayerPlaylistPlugin<T = any>(option: Option<T>): (this: Artplayer, art: Artplayer) => ArtplayerPlaylistPlugin<T> {
   return function (artPlayer) {
     artPlayer.layers.add({
       name: 'playlist',
@@ -54,14 +56,16 @@ function artplayerPlaylistPlugin(option: Option): (this: Artplayer, art: Artplay
             if (selectedIndex === option.index) {
               return
             }
-            const items = artPlayer.layers.playlist.querySelectorAll('.artplayer-plugin-playlist-item') as NodeListOf<HTMLElement>
-            items[option.index].removeAttribute('selected')
-            items[selectedIndex].setAttribute('selected', '')
-            option.index = selectedIndex
-            option.onSelect?.(option.index)
-            artPlayer.switchUrl(option.playList[selectedIndex].url).then(() => {
-              option.onSwitch?.(option.playList[selectedIndex].url, option.index)
-            })
+            option.onClick?.(selectedIndex, option.playList[selectedIndex].url, option.playList[selectedIndex].data)
+            if (option.autoSwitch) {
+              const items = artPlayer.layers.playlist.querySelectorAll('.artplayer-plugin-playlist-item') as NodeListOf<HTMLElement>
+              items[option.index].removeAttribute('selected')
+              items[selectedIndex].setAttribute('selected', '')
+              option.index = selectedIndex
+              artPlayer.switchUrl(option.playList[selectedIndex].url).then(() => {
+                option.onSwitch?.(option.playList[selectedIndex].url, option.index)
+              })
+            }
           }
         })
       },
@@ -85,7 +89,7 @@ function artplayerPlaylistPlugin(option: Option): (this: Artplayer, art: Artplay
       option.index = index
     }
 
-    function update(newOption: Option) {
+    function update(newOption: Option<T>) {
       artPlayer.layers.update({
         name: 'playlist',
         html: `<div class="artplayer-plugin-playlist-layer">${generateItemListHtml(newOption)}</div>`,
