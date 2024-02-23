@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center items-center py-4">
-    <div class="max-w-3xl w-full ">
+    <div class="max-w-3xl w-full box-content px-4">
       <h2 class="m-0 mb-4">
         <RouterLink to="/" class="i-carbon-home mr-2 color-orange inline-block vertical-middle" title="首页" />
         {{ videoDetail?.vod_name }} - {{ videoDetail?.vod_sub }}
@@ -26,7 +26,7 @@
         <div class="flex items-center text-5">
           <h3>剧集</h3> <button class="cursor-pointer ml-2 inline-block i-carbon-sort-ascending color-orange [&.desc]:(i-carbon-sort-descending color-orange)" :class="{ desc: episodeSort === 'desc' } " @click="handleToggleEpisodeSort" />
         </div>
-        <div class="grid grid-cols-8 gap-2">
+        <div class="grid grid-cols-5 sm:grid-cols-8 gap-2">
           <button
             v-for="(episode, index) in episodesForButton"
             :key="index"
