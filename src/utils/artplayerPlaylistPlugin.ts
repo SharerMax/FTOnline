@@ -72,12 +72,21 @@ function artplayerPlaylistPlugin<T = any>(option: Option<T>): (this: Artplayer, 
     })
     function show() {
       artPlayer.layers.playlist.style.display = 'block'
+      artPlayer.layers.playlist.querySelector('.artplayer-plugin-playlist-item[selected]')?.scrollIntoView()
     }
     function hide() {
       artPlayer.layers.playlist.style.display = 'none'
     }
+    function isPlayListDisplay() {
+      return artPlayer.layers.playlist.style.display === 'block'
+    }
     function toggle() {
-      artPlayer.layers.playlist.style.display = artPlayer.layers.playlist.style.display === 'none' ? 'block' : 'none'
+      if (isPlayListDisplay()) {
+        hide()
+      }
+      else {
+        show()
+      }
     }
     function select(index: number) {
       if (option.index === index) {
@@ -86,6 +95,7 @@ function artplayerPlaylistPlugin<T = any>(option: Option<T>): (this: Artplayer, 
       const items = artPlayer.layers.playlist.querySelectorAll('.artplayer-plugin-playlist-item') as NodeListOf<HTMLElement>
       items[option.index]?.removeAttribute('selected')
       items[index]?.setAttribute('selected', '')
+      items[index]?.scrollIntoView()
       option.index = index
     }
 
