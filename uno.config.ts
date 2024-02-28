@@ -9,7 +9,7 @@ import type { UserConfig } from 'unocss'
 // FIXME https://github.com/unocss/unocss/issues/2542
 export default defineConfig({
   shortcuts: {
-    btn: 'border-1 border-orange text-orange  bg-transparent rounded cursor-pointer hover:(border-yellow text-yellow)',
+    btn: 'border-1 border-orange text-orange outline-none  bg-transparent rounded cursor-pointer hover:(border-yellow text-yellow)',
   },
   presets: [presetUno(), presetIcons({
     collections: {
