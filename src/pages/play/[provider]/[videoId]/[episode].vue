@@ -43,13 +43,12 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router/auto'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import Artplayer from 'artplayer'
 import Hls from 'hls.js'
 import { debounce } from 'throttle-debounce'
 import type { ComponentOption } from 'artplayer/types/component'
-import { onBeforeRouteLeave, useRouter } from 'vue-router/auto'
 import type { VideoDetail } from '@/types'
 import useEpisodeStore, { generateStoreKey } from '@/store/useEpisodeStore'
 import { queryVideosDetail } from '@/api'

@@ -68,7 +68,7 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router/auto'
 
 import type { RouteLocationRaw } from 'vue-router/auto'
 import MediaItem from '@/components/MediaItem.vue'
