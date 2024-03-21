@@ -19,6 +19,7 @@
   "dependencies": {
     "@unhead/vue": "^1.8.20",
     "@unocss/reset": "^0.58.6",
+    "@vercel/analytics": "^1.2.2",
     "artplayer": "^5.1.1",
     "axios": "^1.6.8",
     "hls.js": "^1.5.7",

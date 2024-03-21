@@ -1,5 +1,6 @@
 import { type Directive, createApp } from 'vue'
 import { createHead } from '@unhead/vue'
+import { inject } from '@vercel/analytics'
 import App from './App.vue'
 import router from './router'
 
@@ -18,3 +19,4 @@ createApp(App).directive('focus', {
     el.focus()
   },
 } satisfies Directive<HTMLElement>).use(store).use(router).use(head).mount('#app')
+inject()
