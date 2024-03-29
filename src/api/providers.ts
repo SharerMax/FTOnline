@@ -55,7 +55,7 @@ function generateUniversalProvider<T extends UniversalProviderKey>(name: T, apiU
 
 const universalProviders: { [key: string]: Provider } = {}
 
-universalProvidersConfig.forEach((provider) => {
+universalProvidersConfig.filter(provider => provider.enable).forEach((provider) => {
   universalProviders[provider.key] = generateUniversalProvider(provider.key, provider.apiUrl, provider.name)
 })
 const Providers = {
