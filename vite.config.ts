@@ -8,10 +8,10 @@ import VueRouter from 'unplugin-vue-router/vite'
 import svgLoader from 'vite-svg-loader'
 
 import MetaLayouts from 'vite-plugin-vue-meta-layouts'
-import Inspect from 'vite-plugin-inspect'
 import { browserslistToTargets } from 'lightningcss'
 import browserslistToEsbuild from 'browserslist-to-esbuild'
 import browserslist from 'browserslist'
+import VueDevTools from 'vite-plugin-vue-devtools'
 
 // console.log(browserslist())
 // https://vitejs.dev/config/
@@ -32,7 +32,7 @@ export default defineConfig({
     //   resolver: 'vue',
     // }),
     MetaLayouts(),
-    Inspect(),
+    VueDevTools(),
   ],
   css: {
     transformer: 'lightningcss',

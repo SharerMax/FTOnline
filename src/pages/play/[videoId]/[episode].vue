@@ -3,7 +3,7 @@
     <div class="max-w-3xl w-full box-content px-4">
       <h2 class="m-0 mb-4">
         <RouterLink to="/" class="i-carbon-home mr-2 color-orange inline-block vertical-middle" title="首页" />
-        {{ videoDetail?.vod_name }} - {{ videoDetail?.vod_sub }}
+        {{ videoDetail?.name }} - {{ videoDetail?.nickName }}
       </h2>
       <div id="player" class="w-full aspect-16/9" />
       <div class="mt-4 flex">
@@ -34,7 +34,7 @@
             :class="{ active: selectedEpisodeButtonIndex === index }"
             @click="handleEpisodeClick(episode, index)"
           >
-            {{ episode.episodeName }}
+            {{ episode.name }}
           </button>
         </div>
       </div>
@@ -43,56 +43,33 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router/auto'
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import Artplayer from 'artplayer'
+import type { ComponentOption } from 'artplayer/types/component'
 import Hls from 'hls.js'
 import { debounce } from 'throttle-debounce'
-import type { ComponentOption } from 'artplayer/types/component'
-import type { VideoDetail } from '@/types'
-import useEpisodeStore, { generateStoreKey } from '@/store/useEpisodeStore'
-import { queryVideosDetail } from '@/api'
-import type { SupportedProviderKey } from '@/api/types'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router/auto'
 import artplayerPlaylistPlugin, { type ArtplayerPlaylistPlugin } from '@/utils/artplayerPlaylistPlugin'
+import useEpisodeStore, { generateStoreKey } from '@/store/useEpisodeStore'
+import type { Episode, Provider, Video } from '@/api/types'
+import { getProviderByVideo, getVideoDetail, getVideoEpisode } from '@/api'
 
-const route = useRoute('/play/[provider]/[videoId]/[episode]')
+const route = useRoute('/play/[videoId]/[episode]')
 const router = useRouter()
 
 const videoId = route.params.videoId
-const providerKey = route.params.provider as SupportedProviderKey
-const episodeStoreKey = generateStoreKey(providerKey, videoId)
+const episodeStoreKey = generateStoreKey('1', videoId)
 const episodeNum = computed(() => Number.parseInt(route.params.episode))
 const episodeSort = ref<'asc' | 'desc'>('asc')
-const videoDetail = ref<VideoDetail | null>(null)
-const episodes = computed(() => {
-  return (videoDetail.value?.vod_play_url.split('#') ?? []).map(parseEpisode)
-})
+const videoDetail = ref<Video>()
+const episodes = ref<Episode[]>([])
 const episodesForButton = computed(() => {
   return episodeSort.value === 'asc' ? episodes.value : episodes.value.toReversed()
 })
 const episodesCount = computed(() => {
   return episodes.value.length
 })
-
-interface Episode {
-  episodeName: string
-  videoUrl: string
-}
-
-function parseEpisode(url: string): Episode {
-  const [episodeName, videoUrl] = url.split('$')
-  return {
-    episodeName,
-    videoUrl,
-  }
-}
-async function getVideoDetail(id: string) {
-  const res = await queryVideosDetail(id, providerKey)
-  if (res.list && res.list.length > 0) {
-    return res.list[0] as VideoDetail
-  }
-  return null
-}
+const selectedProvider = ref<Provider>()
 
 let hls: Hls
 function playM3u8(video: HTMLMediaElement, url: string, art: Artplayer) {
@@ -186,6 +163,9 @@ onMounted(() => {
   player.once('ready', () => {
     skipEpisodeHeader()
   })
+  player.on('play', () => {
+    skipEpisodeHeader()
+  })
   const playNext = debounce(3000, () => {
     // console.log('playNext')
     playNextEpisode()
@@ -204,27 +184,35 @@ onMounted(() => {
       playNext()
     }
   })
-  getVideoDetail(videoId).then((detail) => {
-    videoDetail.value = detail
-    if (episodes.value.length > 0) {
-      if (episodeNum.value > episodes.value.length) {
-        router.push('/404')
-        return
+  getProviderByVideo(+videoId).then((providers) => {
+    selectedProvider.value = providers[0]
+    return providers[0].id
+  }).then((providerId) => {
+    getVideoEpisode(+videoId, providerId).then((res) => {
+      episodes.value = res
+      if (episodes.value.length > 0) {
+        if (episodeNum.value > episodes.value.length) {
+          router.push('/404')
+          return
+        }
+        const playListPlugin = player?.plugins.playlist as ArtplayerPlaylistPlugin<Episode>
+        playListPlugin.update({
+          playList: episodes.value.map((episode) => {
+            return {
+              title: episode.name,
+              url: episode.url,
+              data: episode,
+            }
+          }),
+          index: selectedEpisodeIndex.value,
+        })
+        playEpisode(episodes.value[selectedEpisodeIndex.value])
+        updateEpisodeControl(episodes.value[selectedEpisodeIndex.value])
       }
-      const playListPlugin = player?.plugins.playlist as ArtplayerPlaylistPlugin<Episode>
-      playListPlugin.update({
-        playList: episodes.value.map((episode) => {
-          return {
-            title: episode.episodeName,
-            url: episode.videoUrl,
-            data: episode,
-          }
-        }),
-        index: selectedEpisodeIndex.value,
-      })
-      playEpisode(episodes.value[selectedEpisodeIndex.value])
-      updateEpisodeControl(episodes.value[selectedEpisodeIndex.value])
-    }
+    })
+  })
+  getVideoDetail(+videoId).then((detail) => {
+    videoDetail.value = detail
   })
 })
 onBeforeUnmount(() => {
@@ -252,9 +240,8 @@ function handleEpisodeClick(episode: Episode, index: number) {
       break
   }
   router.push({
-    name: '/play/[provider]/[videoId]/[episode]',
+    name: '/play/[videoId]/[episode]',
     params: {
-      provider: providerKey,
       videoId,
       episode: jumpEpisodeNum,
     },
@@ -268,13 +255,13 @@ function updateEpisodeControl(episode: Episode) {
     if (player.controls.episode) {
       player.controls.update({
         name: 'episode',
-        html: episode.episodeName,
+        html: episode.name,
       })
     }
     else {
       const episodeControl: ComponentOption = {
         name: 'episode',
-        html: episode.episodeName,
+        html: episode.name,
         position: 'right',
         tooltip: '选择剧集',
         click() {
@@ -288,7 +275,7 @@ function updateEpisodeControl(episode: Episode) {
 
 function playEpisode(episode: Episode) {
   if (player) {
-    player.switchUrl(episode.videoUrl).then(skipEpisodeHeader)
+    player.switch = episode.url
   }
 }
 
@@ -314,9 +301,8 @@ function isFirstEpisode() {
 function playNextEpisode() {
   if (!isLastEpisode()) {
     router.push({
-      name: '/play/[provider]/[videoId]/[episode]',
+      name: '/play/[videoId]/[episode]',
       params: {
-        provider: providerKey,
         videoId,
         episode: episodeNum.value + 1,
       },
@@ -334,9 +320,8 @@ function playNextEpisode() {
 function playPreviousEpisode() {
   if (!isFirstEpisode()) {
     router.push({
-      name: '/play/[provider]/[videoId]/[episode]',
+      name: '/play/[videoId]/[episode]',
       params: {
-        provider: providerKey,
         videoId,
         episode: episodeNum.value - 1,
       },
@@ -353,7 +338,9 @@ function playPreviousEpisode() {
 
 function skipEpisodeHeader() {
   if (player) {
-    player.currentTime = episodeStore.headerTimes[episodeStoreKey] ?? 0
+    if (player.currentTime < episodeStore.headerTimes[episodeStoreKey] ?? 0) {
+      player.currentTime = episodeStore.headerTimes[episodeStoreKey] ?? 0
+    }
   }
 }
 

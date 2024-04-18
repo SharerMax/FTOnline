@@ -1,6 +1,11 @@
 <template>
   <div class="flex">
-    <img :src="poster" alt="" class="w-40 aspect-2/3 object-cover flex-none">
+    <img
+      :src="poster || defaultPoster"
+      alt=""
+      class="w-40 aspect-2/3 object-cover flex-none"
+      loading="lazy"
+    >
     <div class="ml-4 flex flex-col flex-1 overflow-hidden">
       <h2 class="m-0 text-5 truncate" :title="name">
         {{ name }}
@@ -44,6 +49,8 @@
 </template>
 
 <script setup lang="ts">
+import defaultPoster from '@/assets/img/default-poster.svg?url'
+
 const props = defineProps<{
   id: string
   poster: string

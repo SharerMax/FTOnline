@@ -25,21 +25,21 @@
           placeholder="想看啥？"
           @keyup.enter="handleSearchClick"
         >
-        <select :value="providerKey" class="bg-transparent color-orange border-none outline-none px-2" @input="handleProviderChange($event)">
-          <option v-for="(provider, index) in allProviders" :key="index" :value="provider.key">
-            {{ provider.name }}
+        <select :value="selectedVideoType" class="bg-transparent color-orange border-none outline-none px-2" @input="handleVideoTypeChange($event)">
+          <option v-for="(type, index) in videoTypes" :key="index" :value="type">
+            {{ videoTypeNames[index] }}
           </option>
         </select>
         <button class="i-carbon:search h-4 w-4 border-none px-5 cursor-pointer color-orange flex-none" @click="handleSearchClick" />
       </div>
       <div class="mt-4 flex gap-1 flex-wrap">
         <button
-          v-for="(type, index) in videoTypes"
+          v-for="(type, index) in videoGenres"
           :key="index"
           class="btn"
-          @click="handleTypeClick(type)"
+          @click="handleGenreClick(type)"
         >
-          {{ type.type_name }}
+          {{ type.name }}
         </button>
       </div>
     </div>
@@ -49,58 +49,53 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router/auto'
-import type { SupportedProviderKey } from '@/api/types'
-import { queryVideoTypes } from '@/api'
-import type { VideoType } from '@/types'
-import Providers from '@/api/providers'
+import { type Genre, VideoType } from '@/api/types'
+import { getVideoGenres } from '@/api'
 
 const input = ref('')
 const router = useRouter()
-const videoTypes = ref<VideoType[]>([])
-const allProviders = Providers.all()
-const providerKey = ref<SupportedProviderKey>(allProviders[0].key)
-
+const videoGenres = ref<Genre[]>([])
+const videoTypes = ['', VideoType.TV, VideoType.Movie, VideoType.VarietyShow, VideoType.Animation, VideoType.Other]
+const selectedVideoType = ref<VideoType | ''>('')
+const videoTypeNames = ['所有', '电视剧', '电影', '综艺', '动漫', '其他']
 function handleSearchClick() {
+  toSearchResultPage()
+}
+function handleGenreClick(genre: Genre) {
+  toSearchResultPage(genre.id)
+}
+
+function toSearchResultPage(genreId?: number) {
   router.push({
-    name: '/search/[provider]/[page]',
+    name: '/search/[page]',
     params: {
-      provider: providerKey.value,
       page: 1,
     },
     query: {
-      kw: input.value,
+      kw: input.value || undefined,
+      type: selectedVideoType.value.toString() || undefined,
+      genre: genreId?.toString(),
     },
   })
 }
-function handleTypeClick(type: VideoType) {
-  router.push({
-    name: '/search/[provider]/[page]',
-    params: {
-      provider: providerKey.value,
-      page: 1,
-    },
-    query: {
-      kw: input.value,
-      type: type.type_id,
-    },
-  })
-}
+
 onMounted(() => {
-  updateVideoTypes(providerKey.value)
+  updateVideoGenres()
 })
-function updateVideoTypes(name: SupportedProviderKey) {
-  queryVideoTypes(name).then((res) => {
-    videoTypes.value = res
+function updateVideoGenres() {
+  getVideoGenres().then((res) => {
+    videoGenres.value = res
   })
 }
-function handleProviderChange(event: Event) {
+function handleVideoTypeChange(event: Event) {
   if (event.currentTarget instanceof HTMLSelectElement) {
-    const name = event.currentTarget.value as SupportedProviderKey
-    if (providerKey.value === name) {
+    const value = event.currentTarget.value
+    if (!value) {
+      selectedVideoType.value = ''
       return
     }
-    providerKey.value = name
-    updateVideoTypes(name)
+    const videoType = Number.parseInt(event.currentTarget.value) as VideoType
+    selectedVideoType.value = videoType
   }
 }
 </script>

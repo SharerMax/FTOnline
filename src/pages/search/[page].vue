@@ -11,17 +11,17 @@
           class="outline-none leading-8 flex-1 px-2  color-orange border-none dark:(bg-dark-800)"
           @keyup.enter="handleSearchClick"
         >
-        <select :value="providerKey" class="bg-transparent color-orange border-none outline-none px-2" @change="handleProviderChange">
-          <option v-for="(provider, index) in allProviders" :key="index" :value="provider.key">
-            {{ provider.name }}
+        <select v-model="videoType" class="bg-transparent color-orange border-none outline-none px-2">
+          <option v-for="(type, index) in videoTypes" :key="index" :value="type">
+            {{ videoTypeNames[type] }}
           </option>
         </select>
-        <select v-model="videoType" class="bg-transparent color-orange border-none outline-none px-2">
+        <select v-model="selectedGenreId" class="bg-transparent color-orange border-none outline-none px-2">
           <option value="">
             所有
           </option>
-          <option v-for="(type, index) in videoTypes" :key="index" :value="type.type_id">
-            {{ type.type_name }}
+          <option v-for="(genre) in genres" :key="genre.id" :value="genre.id">
+            {{ genre.name }}
           </option>
         </select>
         <button class="i-carbon:search h-4 w-4 border-none px-5 cursor-pointer flex-none color-orange" @click="handleSearchClick" />
@@ -31,20 +31,20 @@
         <div v-show="!loading">
           <template v-if="videoList.length > 0">
             <ul class="list-none p-0 space-y-4">
-              <li v-for="video in videoList" :key="video.vod_id">
+              <li v-for="video in videoList" :key="video.id">
                 <MediaItem
-                  :id="`${video.vod_id}`"
-                  :actor="video.vod_actor"
-                  :area="video.vod_area"
-                  :language="video.vod_lang"
-                  :remark="video.vod_remarks"
-                  :type="video.type_name || '未知'"
-                  :year="video.vod_year"
-                  :director="video.vod_director"
-                  :poster="video.vod_pic"
-                  :name="video.vod_name"
-                  :score="video.vod_score"
-                  :sub-name="video.vod_sub"
+                  :id="`${video.id}`"
+                  :actor="video.actors"
+                  :area="video.area"
+                  :language="video.language"
+                  :remark="video.remarks"
+                  :type="videoTypeNames[video.type]"
+                  :year="video.year.toString()"
+                  :director="video.director"
+                  :poster="video.poster[0].url"
+                  :name="video.name"
+                  :score="video.score.toString()"
+                  :sub-name="video.nickName"
                   @click-play="handlePlayClick"
                 />
               </li>
@@ -67,26 +67,53 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router/auto'
 
 import type { RouteLocationRaw } from 'vue-router/auto'
+import { getVideoGenres, getVideoListPage } from '@/api'
+import { type Genre, type Video, VideoType } from '@/api/types'
 import MediaItem from '@/components/MediaItem.vue'
 import Pagination from '@/components/Pagination.vue'
-import type { VideoDetail, VideoType } from '@/types'
-import { queryVideoList, queryVideoTypes } from '@/api'
-import type { SupportedProviderKey } from '@/api/types'
-import Providers from '@/api/providers'
 
-const route = useRoute('/search/[provider]/[page]')
+const route = useRoute('/search/[page]')
 const keyWord = (route.query.kw || '') as string
 const videoType = ref((route.query.type || '') as string)
-const videoTypes = ref<VideoType[]>([])
+const selectedGenreId = ref((route.query.genre || '') as string)
+const genres = ref<Genre[]>([])
+const selectedGenre = computed(() => {
+  if (selectedGenreId.value) {
+    return genres.value.find(genre => genre.id.toString() === selectedGenreId.value)
+  }
+  else {
+    return {
+      id: undefined,
+      name: '全部',
+    }
+  }
+})
 const page = route.params.page
-const providerKey = ref(route.params.provider as SupportedProviderKey)
-const allProviders = Providers.all()
+
+const videoTypesAll = ''
+const videoTypes: (typeof videoTypesAll | VideoType)[] = [videoTypesAll, VideoType.TV, VideoType.Movie, VideoType.VarietyShow, VideoType.Animation, VideoType.Other]
+const selectedVideoType = computed(() => {
+  if (videoType.value) {
+    return Number.parseInt(videoType.value) as VideoType
+  }
+  else {
+    return undefined
+  }
+})
+const videoTypeNames: Record<VideoType | typeof videoTypesAll, string> = {
+  [videoTypesAll]: '全部',
+  [VideoType.TV]: '电视剧',
+  [VideoType.Movie]: '电影',
+  [VideoType.VarietyShow]: '综艺',
+  [VideoType.Animation]: '动漫',
+  [VideoType.Other]: '其它',
+}
 const input = ref(keyWord || '')
-const videoList = ref<VideoDetail[]>([])
+const videoList = ref<Video[]>([])
 const pagination = reactive({
   page: page ? +page : 1,
   total: 0,
@@ -94,38 +121,35 @@ const pagination = reactive({
 })
 const router = useRouter()
 
-onMounted(() => {
-  updateVideoTypes(providerKey.value)
-})
-function updateVideoTypes(providerKey: SupportedProviderKey) {
-  queryVideoTypes(providerKey).then((res) => {
-    videoTypes.value = res
-  })
+async function updateGenres() {
+  const res = await getVideoGenres()
+  genres.value = res
 }
 
 const loading = ref(false)
-function searchVideoList(keyword: string, videoType: string = '', page = 1) {
+function searchVideoList(page: number, keyword: string) {
   loading.value = true
-  queryVideoList(keyword, page, videoType, providerKey.value).then((res) => {
+  getVideoListPage(page, keyword, selectedVideoType.value, selectedGenre.value?.id).then((res) => {
     pagination.total = res.total
     pagination.page = +res.page
-    pagination.size = +res.limit
+    pagination.size = +res.pageSize
     videoList.value = res.list
   }).finally(() => loading.value = false)
 }
 
 function updatePage(page: number) {
-  const routeLocationRaw: RouteLocationRaw<'/search/[provider]/[page]'> = {
-    name: '/search/[provider]/[page]',
+  const routeLocationRaw: RouteLocationRaw<'/search/[page]'> = {
+    name: '/search/[page]',
     params: {
-      provider: providerKey.value,
       page: `${page}`,
     },
     query: {
       kw: input.value,
-      type: videoType.value,
+      type: selectedVideoType.value,
+      genre: selectedGenre.value?.id,
     },
   }
+  console.log(selectedGenre.value, selectedVideoType.value, videoType.value)
   if (pagination.page === page) {
     router.replace(routeLocationRaw)
   }
@@ -133,7 +157,7 @@ function updatePage(page: number) {
     router.push(routeLocationRaw)
   }
 
-  searchVideoList(input.value, videoType.value, page)
+  searchVideoList(page, input.value)
 }
 
 function handlePageChange(page: number) {
@@ -144,26 +168,15 @@ function handleSearchClick() {
   updatePage(1)
 }
 onMounted(() => {
-  searchVideoList(keyWord || '', videoType.value, pagination.page)
+  updateGenres().then(() => {
+    searchVideoList(pagination.page, keyWord || '')
+  })
 })
-
-function handleProviderChange(event: Event) {
-  if (event.currentTarget instanceof HTMLSelectElement) {
-    const key = event.currentTarget.value as SupportedProviderKey
-    if (providerKey.value === key) {
-      return
-    }
-    providerKey.value = key
-    videoType.value = ''
-    updateVideoTypes(key)
-  }
-}
 
 function handlePlayClick(videoId: string) {
   router.push({
-    name: '/play/[provider]/[videoId]/[episode]',
+    name: '/play/[videoId]/[episode]',
     params: {
-      provider: providerKey.value,
       videoId,
       episode: 1,
     },

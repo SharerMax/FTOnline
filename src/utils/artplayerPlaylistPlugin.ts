@@ -21,7 +21,6 @@ export interface ArtplayerPlaylistPlugin<T> {
   toggle: () => void
   select: (index: number) => void
   update: (option: Option<T>) => void
-
   name: string
 }
 
