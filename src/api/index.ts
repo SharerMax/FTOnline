@@ -5,13 +5,14 @@ export async function getVideoDetail(id: number) {
   return await client.get<Video>(`/video/detail/${id}`)
 }
 
-export async function getVideoListPage(page: number, name?: string, type?: VideoType, genreId?: number) {
+export async function getVideoListPage(page: number, name?: string, type?: VideoType, genreId?: number, pageSize = 30) {
   return await client.get<PageResult<Video>>('/video/list', {
     params: {
       page,
       name,
       genre: genreId,
       type,
+      pageSize,
     },
   })
 }

@@ -1,6 +1,6 @@
 <template>
-  <div class="flex justify-center">
-    <div class="max-w-lg w-full pt-14 pb-3">
+  <div class="flex justify-center px-4">
+    <div class="max-w-7xl w-full pt-14 pb-3">
       <div class="text-center color-orange">
         <a href="/" class="text-6 color-orange decoration-none flex-inline items-center"><span class="i-ft-logo inline-block mr-2" /> FT Online</a>
       </div>
@@ -30,22 +30,17 @@
         <div v-show="loading" class="i-svg-spinners:blocks-shuffle-3 color-orange mx-auto mt-12 w-10 h-10" />
         <div v-show="!loading">
           <template v-if="videoList.length > 0">
-            <ul class="list-none p-0 space-y-4">
+            <ul class="list-none p-0 grid grid-cols-auto-40 md:(grid-cols-auto-50) gap-4 justify-around">
               <li v-for="video in videoList" :key="video.id">
-                <MediaItem
-                  :id="`${video.id}`"
-                  :actor="video.actors"
-                  :area="video.area"
-                  :language="video.language"
-                  :remark="video.remarks"
-                  :type="videoTypeNames[video.type]"
-                  :year="video.year.toString()"
-                  :director="video.director"
-                  :poster="video.poster[0].url"
+                <SimpleMediaItem
                   :name="video.name"
-                  :score="video.score.toString()"
-                  :sub-name="video.nickName"
-                  @click-play="handlePlayClick"
+                  class="cursor-pointer"
+                  :poster="video.poster[0].url"
+                  :year="video.year"
+                  :type="videoTypeNames[video.type]"
+                  :remark="video.remarks"
+                  :area="video.area"
+                  @click="handlePlayClick(video.id)"
                 />
               </li>
             </ul>
@@ -73,8 +68,8 @@ import { useRoute, useRouter } from 'vue-router/auto'
 import type { RouteLocationRaw } from 'vue-router/auto'
 import { getVideoGenres, getVideoListPage } from '@/api'
 import { type Genre, type Video, VideoType } from '@/api/types'
-import MediaItem from '@/components/MediaItem.vue'
 import Pagination from '@/components/Pagination.vue'
+import SimpleMediaItem from '@/components/SimpleMediaItem.vue'
 
 const route = useRoute('/search/[page]')
 const keyWord = (route.query.kw || '') as string
@@ -173,7 +168,7 @@ onMounted(() => {
   })
 })
 
-function handlePlayClick(videoId: string) {
+function handlePlayClick(videoId: number) {
   router.push({
     name: '/play/[videoId]/[episode]',
     params: {
