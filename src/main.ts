@@ -1,5 +1,6 @@
 import { type Directive, createApp } from 'vue'
 import { createHead } from '@unhead/vue'
+import { handleHotUpdate } from 'vue-router/auto-routes'
 import App from './App.vue'
 import router from './router'
 
@@ -10,6 +11,11 @@ import './style/common.css'
 import 'uno.css'
 import store from './store'
 import './utils/autoDarkClass'
+
+// This will update routes at runtime without reloading the page
+if (import.meta.hot) {
+  handleHotUpdate(router)
+}
 
 const head = createHead()
 // console.log(router.getRoutes())
