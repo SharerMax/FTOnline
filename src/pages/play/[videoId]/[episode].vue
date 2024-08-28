@@ -3,7 +3,7 @@
     <div class="max-w-3xl w-full box-content px-4">
       <h2 class="m-0 mb-4">
         <RouterLink to="/" class="i-carbon-home mr-2 color-orange inline-block vertical-middle" title="首页" />
-        {{ videoDetail?.name }} - {{ videoDetail?.nickName }}
+        {{ videoDetail?.name }}{{ videoDetail?.nickName ? `- ${videoDetail?.nickName}` : '' }}
       </h2>
       <div id="player" class="w-full aspect-16/9" />
       <div class="mt-4 flex">
@@ -23,14 +23,26 @@
         </div>
       </div>
       <div>
-        <div class="flex items-center text-5">
-          <h3>剧集</h3> <button class="cursor-pointer ml-2 inline-block i-carbon-sort-ascending color-orange [&.desc]:(i-carbon-sort-descending color-orange)" :class="{ desc: episodeSort === 'desc' } " @click="handleToggleEpisodeSort" />
+        <div>
+          <h3>播放源</h3>
+          <button
+            v-for="(provider, index) in videoProviders"
+            :key="index"
+            class="btn [&+&]:ml-2 [&.active]:(bg-orange text-white border-orange)"
+            :class="{ active: selectedProvider?.id === provider.id }"
+            @click="handleProviderClick(provider)"
+          >
+            {{ provider.name }}
+          </button>
+        </div>
+        <div class="flex items-center">
+          <h3>剧集<button class="text-size-inherit cursor-pointer ml-2 inline-block i-carbon-sort-ascending color-orange [&.desc]:(i-carbon-sort-descending color-orange)" :class="{ desc: episodeSort === 'desc' } " @click="handleToggleEpisodeSort" /></h3>
         </div>
         <div class="grid grid-cols-5 sm:grid-cols-8 gap-2">
           <button
             v-for="(episode, index) in episodesForButton"
             :key="index"
-            class="btn ![&.active]:(bg-orange text-white border-orange)"
+            class="btn [&.active]:(bg-orange text-white border-orange)"
             :class="{ active: selectedEpisodeButtonIndex === index }"
             @click="handleEpisodeClick(episode, index)"
           >
@@ -62,6 +74,7 @@ const episodeStoreKey = generateStoreKey('1', videoId)
 const episodeNum = computed(() => Number.parseInt(route.params.episode))
 const episodeSort = ref<'asc' | 'desc'>('asc')
 const videoDetail = ref<Video>()
+const videoProviders = ref<Provider[]>([])
 const episodes = ref<Episode[]>([])
 const episodesForButton = computed(() => {
   return episodeSort.value === 'asc' ? episodes.value : episodes.value.toReversed()
@@ -185,6 +198,7 @@ onMounted(() => {
     }
   })
   getProviderByVideo(+videoId).then((providers) => {
+    videoProviders.value = providers
     selectedProvider.value = providers[0]
     return providers[0].id
   }).then((providerId) => {
@@ -227,6 +241,32 @@ function handleToggleEpisodeSort() {
 function updatePlaylistSelect(episodeIndex: number) {
   const playListPlugin = player?.plugins.playlist as ArtplayerPlaylistPlugin<Episode>
   playListPlugin.select(episodeIndex)
+}
+
+function handleProviderClick(provider: Provider) {
+  selectedProvider.value = provider
+  getVideoEpisode(+videoId, provider.id).then((res) => {
+    episodes.value = res
+    if (episodes.value.length > 0) {
+      if (episodeNum.value > episodes.value.length) {
+        router.push('/404')
+        return
+      }
+      const playListPlugin = player?.plugins.playlist as ArtplayerPlaylistPlugin<Episode>
+      playListPlugin.update({
+        playList: episodes.value.map((episode) => {
+          return {
+            title: episode.name,
+            url: episode.url,
+            data: episode,
+          }
+        }),
+        index: selectedEpisodeIndex.value,
+      })
+      playEpisode(episodes.value[selectedEpisodeIndex.value])
+      updateEpisodeControl(episodes.value[selectedEpisodeIndex.value])
+    }
+  })
 }
 
 function handleEpisodeClick(episode: Episode, index: number) {

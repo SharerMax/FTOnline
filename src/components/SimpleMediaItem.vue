@@ -1,22 +1,23 @@
 <template>
-  <div class="w-full shadow shadow-gray rounded overflow-hidden dark:(shadow-orange)">
-    <div class="w-full aspect-2/3 relative overflow-hidden">
+  <div class="w-full shadow-sm shadow-gray rounded overflow-hidden dark:(shadow-none)">
+    <div class="w-full aspect-2/3 relative overflow-hidden dark:(bg-dark-800)">
       <img
         class="block w-full h-full object-cover will-change-transform transition-transform hover:scale-105"
         :src="props.poster"
         :alt="props.name"
         loading="lazy"
       >
-      <span class="absolute top-0 left-0 text-3 text-white bg-orange px-2 border-radius-rb-1">{{ props.type }}</span>
-      <span v-if="props.remark" class="absolute bottom-0 right-0 text-3 text-white bg-orange  px-2 border-radius-lt-1">{{ props.remark }}</span>
+      <span class="absolute top-0 left-0 text-3 text-white line-height-5 bg-rose-500 px-2 border-radius-rb-1">{{ props.type }}</span>
+      <span v-if="props.remark" class="absolute bottom-0 right-0 text-3 text-white line-height-5 bg-blue-500  px-2 border-radius-lt-1">{{ props.remark }}</span>
     </div>
-
-    <p class="m-0 mt-2 px-2 text-base truncate" :title="props.name">
-      {{ props.name }}
-    </p>
-    <div class="text-sm opacity-60 px-2 mb-2">
-      <span>{{ props.year }}</span>
-      <span class="float-right">{{ props.area }}</span>
+    <div class="p-2 dark: bg-dark-500">
+      <p class="m-0 text-base truncate" :title="props.name">
+        {{ props.name }}
+      </p>
+      <div class="text-sm opacity-60 dark:bg-op-10">
+        <span>{{ props.year }}</span>
+        <span class="float-right">{{ props.area }}</span>
+      </div>
     </div>
   </div>
 </template>
