@@ -59,7 +59,7 @@ export default defineConfig({
             return 'assets/[name]-[hash][extname]'
           }
 
-          if (/\.(png|jpe?g|webp|gif|ico)$/i.test(assetInfo.name)) {
+          if (/\.(?:png|jpe?g|webp|gif|ico)$/i.test(assetInfo.name)) {
             return 'assets/img/[name]-[hash][extname]'
           }
 
@@ -79,7 +79,7 @@ export default defineConfig({
             return 'assets/audio/[name]-[hash][extname]'
           }
 
-          if (/\.(woff|woff2|otf|ttf)$/i.test(assetInfo.name)) {
+          if (/\.(?:woff|woff2|otf|ttf)$/i.test(assetInfo.name)) {
             return 'assets/font/[name]-[hash][extname]'
           }
 
