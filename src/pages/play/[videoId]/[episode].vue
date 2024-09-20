@@ -378,7 +378,7 @@ function playPreviousEpisode() {
 
 function skipEpisodeHeader() {
   if (player) {
-    if (player.currentTime < episodeStore.headerTimes[episodeStoreKey] ?? 0) {
+    if (player.currentTime < episodeStore.headerTimes[episodeStoreKey]) {
       player.currentTime = episodeStore.headerTimes[episodeStoreKey] ?? 0
     }
   }
