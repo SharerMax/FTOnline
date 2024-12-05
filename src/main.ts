@@ -1,15 +1,15 @@
-import { type Directive, createApp } from 'vue'
 import { createHead } from '@unhead/vue'
+import { createApp, type Directive } from 'vue'
 import { handleHotUpdate } from 'vue-router/auto-routes'
 import App from './App.vue'
 import router from './router'
 
+import store from './store'
 import '@unocss/reset/normalize.css'
 import '@unocss/reset/sanitize/sanitize.css'
 import '@unocss/reset/sanitize/assets.css'
 import './style/common.css'
 import 'uno.css'
-import store from './store'
 import './utils/autoDarkClass'
 
 // This will update routes at runtime without reloading the page

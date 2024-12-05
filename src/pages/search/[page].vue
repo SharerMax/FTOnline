@@ -62,14 +62,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router/auto'
-
 import type { RouteLocationRaw } from 'vue-router/auto'
 import { getVideoGenres, getVideoListPage } from '@/api'
+
 import { type Genre, type Video, VideoType } from '@/api/types'
 import Pagination from '@/components/Pagination.vue'
 import SimpleMediaItem from '@/components/SimpleMediaItem.vue'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router/auto'
 
 const route = useRoute('/search/[page]')
 const keyWord = (route.query.kw || '') as string

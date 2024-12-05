@@ -1,17 +1,17 @@
 import * as path from 'node:path'
-import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import browserslist from 'browserslist'
+import browserslistToEsbuild from 'browserslist-to-esbuild'
+
+import { browserslistToTargets } from 'lightningcss'
 import Unocss from 'unocss/vite'
 
 // import Pages from 'vite-plugin-pages'
 import VueRouter from 'unplugin-vue-router/vite'
-import svgLoader from 'vite-svg-loader'
-
-import MetaLayouts from 'vite-plugin-vue-meta-layouts'
-import { browserslistToTargets } from 'lightningcss'
-import browserslistToEsbuild from 'browserslist-to-esbuild'
-import browserslist from 'browserslist'
+import { defineConfig } from 'vite'
 import VueDevTools from 'vite-plugin-vue-devtools'
+import MetaLayouts from 'vite-plugin-vue-meta-layouts'
+import svgLoader from 'vite-svg-loader'
 
 // console.log(browserslist())
 // https://vitejs.dev/config/

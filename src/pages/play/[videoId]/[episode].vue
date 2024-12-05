@@ -55,16 +55,16 @@
 </template>
 
 <script setup lang="ts">
-import Artplayer from 'artplayer'
+import type { Episode, Provider, Video } from '@/api/types'
 import type { ComponentOption } from 'artplayer/types/component'
+import { getProviderByVideo, getVideoDetail, getVideoEpisode } from '@/api'
+import useEpisodeStore, { generateStoreKey } from '@/store/useEpisodeStore'
+import artplayerPlaylistPlugin, { type ArtplayerPlaylistPlugin } from '@/utils/artplayerPlaylistPlugin'
+import Artplayer from 'artplayer'
 import Hls from 'hls.js'
 import { debounce } from 'throttle-debounce'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router/auto'
-import artplayerPlaylistPlugin, { type ArtplayerPlaylistPlugin } from '@/utils/artplayerPlaylistPlugin'
-import useEpisodeStore, { generateStoreKey } from '@/store/useEpisodeStore'
-import type { Episode, Provider, Video } from '@/api/types'
-import { getProviderByVideo, getVideoDetail, getVideoEpisode } from '@/api'
 
 const route = useRoute('/play/[videoId]/[episode]')
 const router = useRouter()

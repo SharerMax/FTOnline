@@ -1,10 +1,10 @@
-import { defineConfig, presetUno } from 'unocss'
-import transformerVariantGroup from '@unocss/transformer-variant-group'
-import presetIcons from '@unocss/preset-icons'
-import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders'
-import transformerDirectives from '@unocss/transformer-directives'
-
 import type { CSSObject, UserConfig } from 'unocss'
+import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders'
+import presetIcons from '@unocss/preset-icons'
+import transformerDirectives from '@unocss/transformer-directives'
+import transformerVariantGroup from '@unocss/transformer-variant-group'
+
+import { defineConfig, presetUno } from 'unocss'
 
 // FIXME https://github.com/unocss/unocss/issues/2542
 export default defineConfig({

@@ -47,10 +47,10 @@
 </template>
 
 <script setup lang="ts">
+import { getVideoGenres } from '@/api'
+import { type Genre, VideoType } from '@/api/types'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router/auto'
-import { type Genre, VideoType } from '@/api/types'
-import { getVideoGenres } from '@/api'
 
 const input = ref('')
 const router = useRouter()

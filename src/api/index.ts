@@ -1,5 +1,5 @@
-import client from './client'
 import type { Episode, Genre, PageResult, Provider, Video, VideoType } from './types'
+import client from './client'
 
 export async function getVideoDetail(id: number) {
   return await client.get<Video>(`/video/detail/${id}`)
