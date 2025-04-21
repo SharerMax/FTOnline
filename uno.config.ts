@@ -1,17 +1,16 @@
-import type { CSSObject, UserConfig } from 'unocss'
+import type { CSSObject } from 'unocss'
 import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders'
 import presetIcons from '@unocss/preset-icons'
+import presetWind3 from '@unocss/preset-wind3'
 import transformerDirectives from '@unocss/transformer-directives'
 import transformerVariantGroup from '@unocss/transformer-variant-group'
+import { defineConfig } from 'unocss'
 
-import { defineConfig, presetUno } from 'unocss'
-
-// FIXME https://github.com/unocss/unocss/issues/2542
 export default defineConfig({
   shortcuts: {
-    btn: 'border-1 border-orange text-orange outline-none  bg-transparent rounded cursor-pointer hover:(border-yellow text-yellow)',
+    btn: 'border-1 border-orange border-solid text-orange bg-transparent rounded cursor-pointer hover:(border-yellow text-yellow)',
   },
-  presets: [presetUno(), presetIcons({
+  presets: [presetWind3(), presetIcons({
     collections: {
       // svg extension
       ft: FileSystemIconLoader('./src/assets/img', svg => svg.replace(/#fff/, 'currentColor')),
@@ -48,4 +47,4 @@ export default defineConfig({
     }],
   ],
   transformers: [transformerVariantGroup(), transformerDirectives()],
-}) as UserConfig
+})

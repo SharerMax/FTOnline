@@ -54,37 +54,7 @@ export default defineConfig({
     target: browserslistToEsbuild(),
     rollupOptions: {
       output: {
-        assetFileNames: (assetInfo) => {
-          if (!assetInfo.name) {
-            return 'assets/[name]-[hash][extname]'
-          }
-
-          if (/\.(?:png|jpe?g|webp|gif|ico)$/i.test(assetInfo.name)) {
-            return 'assets/img/[name]-[hash][extname]'
-          }
-
-          if (/\.svg$/i.test(assetInfo.name)) {
-            return 'assets/svg/[name]-[hash][extname]'
-          }
-
-          if (/\.css$/i.test(assetInfo.name)) {
-            return 'assets/css/[name]-[hash][extname]'
-          }
-
-          if (/\.mp4$/i.test(assetInfo.name)) {
-            return 'assets/video/[name]-[hash][extname]'
-          }
-
-          if (/\.mp3$/i.test(assetInfo.name)) {
-            return 'assets/audio/[name]-[hash][extname]'
-          }
-
-          if (/\.(?:woff|woff2|otf|ttf)$/i.test(assetInfo.name)) {
-            return 'assets/font/[name]-[hash][extname]'
-          }
-
-          return 'assets/[name]-[hash][extname]'
-        },
+        assetFileNames: 'assets/[ext]/[name]-[hash][extname]',
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
       },

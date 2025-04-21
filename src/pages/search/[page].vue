@@ -35,7 +35,7 @@
                 <SimpleMediaItem
                   :name="video.name"
                   class="cursor-pointer"
-                  :poster="video.poster[0].url"
+                  :poster="toVideoPosters(video)"
                   :year="video.year"
                   :type="videoTypeNames[video.type]"
                   :remark="video.remarks"
@@ -52,7 +52,7 @@
               @update:page="handlePageChange"
             />
           </template>
-          <div v-else class="flex  justify-center items-center mt-16 text-5 color-orange">
+          <div v-else class="flex justify-center items-center mt-16 text-5 color-orange">
             <div class="i-gridicons-notice-outline mr-2" /> <span>未找到资源</span>
           </div>
         </div>
@@ -62,10 +62,11 @@
 </template>
 
 <script setup lang="ts">
+import type { Genre, Video } from '@/api/types'
 import type { RouteLocationRaw } from 'vue-router/auto'
-import { getVideoGenres, getVideoListPage } from '@/api'
 
-import { type Genre, type Video, VideoType } from '@/api/types'
+import { getVideoGenres, getVideoListPage } from '@/api'
+import { VideoType } from '@/api/types'
 import Pagination from '@/components/Pagination.vue'
 import SimpleMediaItem from '@/components/SimpleMediaItem.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
@@ -167,6 +168,10 @@ onMounted(() => {
     searchVideoList(pagination.page, keyWord || '')
   })
 })
+
+function toVideoPosters(video: Video) {
+  return video.poster.map(poster => poster.url)
+}
 
 function handlePlayClick(videoId: number) {
   router.push({

@@ -1,5 +1,5 @@
 <template>
-  <div class=" color-orange-500 px-4 flex items-center justify-center">
+  <div class=" color-orange-500 px-4 mt-30">
     <div class="w-100 max-w-full mx-auto">
       <h1 class="flex justify-center items-center text-orange m-0">
         <svg
@@ -47,8 +47,9 @@
 </template>
 
 <script setup lang="ts">
+import type { Genre } from '@/api/types'
 import { getVideoGenres } from '@/api'
-import { type Genre, VideoType } from '@/api/types'
+import { VideoType } from '@/api/types'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router/auto'
 
