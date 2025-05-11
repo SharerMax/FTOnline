@@ -56,10 +56,11 @@
 
 <script setup lang="ts">
 import type { Episode, Provider, Video } from '@/api/types'
+import type { ArtplayerPlaylistPlugin } from '@/utils/artplayerPlaylistPlugin'
 import type { ComponentOption } from 'artplayer/types/component'
 import { getProviderByVideo, getVideoDetail, getVideoEpisode } from '@/api'
 import useEpisodeStore, { generateStoreKey } from '@/store/useEpisodeStore'
-import artplayerPlaylistPlugin, { type ArtplayerPlaylistPlugin } from '@/utils/artplayerPlaylistPlugin'
+import artplayerPlaylistPlugin from '@/utils/artplayerPlaylistPlugin'
 import Artplayer from 'artplayer'
 import Hls from 'hls.js'
 import { debounce } from 'throttle-debounce'

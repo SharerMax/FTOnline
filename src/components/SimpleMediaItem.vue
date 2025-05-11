@@ -32,7 +32,7 @@ const props = withDefaults(defineProps<{
   name: string
   poster?: string | string[]
   year?: number
-  type: string
+  type?: string
   remark?: string
   area?: string
 }>(), {

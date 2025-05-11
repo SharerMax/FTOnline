@@ -1,4 +1,5 @@
-import { type Ref, ref } from 'vue'
+import type { Ref } from 'vue'
+import { ref } from 'vue'
 
 export interface Response<T, E = unknown> {
   loading: Ref<boolean>
